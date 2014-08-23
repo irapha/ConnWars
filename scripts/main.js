@@ -1,5 +1,7 @@
 var planets = {};
 var planetIds = [];
+var selectedPlanets = [];
+var connectedPlanets = [];
 var totalPlanets = 10;
 var levelWidth = $(window).width()-100;
 var levelHeight = $(window).height()-100;
@@ -43,8 +45,34 @@ function draw() {
 function planetClicked(planetEl) {
   var planetId = planetEl.attr('id');
   var planet = planets[planetId];
-  planet.selected = !planet.selected;
-  planetEl.toggleClass('selected');
+
+  if(selectedPlanets.length == 0) {
+    planet.selected = !planet.selected;
+    planetEl.toggleClass('selected');
+    selectedPlanets.push(planetId);
+  }else if(selectedPlanets.length == 1) {
+    //make connection between the two planets
+    connectedPlanets.push({from: selectedPlanets[0], to: planetId});
+    //deselect planets
+    $('#'+selectedPlanets[0]).toggleClass('selected');
+    planets[selectedPlanets[0]].selected = !planets[selectedPlanets[0]].selected;
+
+    planet.selected = !planet.selected;
+
+    selectedPlanets = [];
+  }else if(selectedPlanets.length > 2) {
+    //deselects other selected planets
+    $('#'+selectedPlanets[0]).toggleClass('selected');
+    planets[selectedPlanets[0]].selected = !planets[selectedPlanets[0]].selected;
+
+    $('#'+selectedPlanets[1]).toggleClass('selected');
+    planets[selectedPlanets[1]].selected = !planets[selectedPlanets[1]].selected;
+
+    selectedPlanets = [];
+    //select current planet
+    selectedPlanets.push(planetId);
+    planetEl.toggleClass('selected');
+  }
 }
 
 setupLevel();
