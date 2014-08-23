@@ -70,7 +70,7 @@ function planetClicked(planetEl) {
 
   //delete connections from the selected planet, if they exist
   for(var i = 0; i < connectedPlanets.length; i++) {
-    if(connectedPlanets[i].from == planetId) {
+    if(connectedPlanets[i].from == planetId && (selectedPlanets.length == 0)) {
       connectionId = planetId + connectedPlanets[i].to;
       connectedPlanets.splice(i, 1);
       $("#"+connectionId).remove();
