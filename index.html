@@ -3,7 +3,7 @@
 <html>
   <head>
     <title>Ludum Dare 30</title>
-    <style type='text/css'>
+    <style type="text/css">
       #viewport {
         background-color: black;
         position: absolute;
@@ -11,6 +11,8 @@
         right: 0;
         top: 0;
         bottom: 0;
+        background-image: url("images/stars.gif");
+        background-repeat: repeat;
       }
       .planet {
         width: 50px;
@@ -18,17 +20,30 @@
         border-radius: 50%;
         position: absolute;
       }
-      .red {
+      .planet.red {
         background-color: #F26140;
       }
-      .blue {
+      .planet.blue {
         background-color: #6EA1D7;
       }
-      .grey {
+      .planet.grey {
         background-color: #6E6E6E;
       }
+      .connection {
+        height: 10px;
+      }
+      .connection.blue {
+        background-image: url("images/blue_lines.gif");
+        background-repeat: repeat-x;
+        background-size: contain;
+      }
+      .connection.red {
+        background-image: url("images/orange_lines.gif");
+        background-repeat: repeat-x;
+        background-size: contain;
+      }
       .selected::after {
-        content: '';
+        content: "";
         position: absolute;
         border-radius: 50%;
         top: 0;
@@ -41,9 +56,9 @@
   </head>
 
   <body>
-    <div id='viewport'>
+    <div id="viewport">
     </div>
-    <script src='scripts/jquery.min.js'></script>
-    <script src='scripts/main.js'></script>
+    <script src="scripts/jquery.min.js"></script>
+    <script src="scripts/main.js"></script>
   </body>
 </html>
