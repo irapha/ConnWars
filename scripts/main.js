@@ -8,6 +8,9 @@ var levelWidth = $(window).width()-100;
 var levelHeight = $(window).height()-100;
 var viewport = $('#viewport');
 var selectedPlanet;
+var bluePlanets = [];
+var redPlanets = [];
+var starterPlanetSelected = 0;
 
 function setupLevel() {
   currentId = 0;
@@ -31,7 +34,7 @@ function setupLevel() {
     currentId++;
   }
 
-  $('.planet').click(function() {
+  $(".planet").click(function() {
     planetClicked($(this));
   });
 }
@@ -39,9 +42,9 @@ function setupLevel() {
 function initialDraw() {
   planetIds.forEach(function(planetId) {
     var planet = planets[planetId];
-    var planetEl = $('#'+planetId);
-    planetEl.css('left', planet.x-25);
-    planetEl.css('top', planet.y-25);
+    var planetEl = $("#"+planetId);
+    planetEl.css("left", planet.x-25);
+    planetEl.css("top", planet.y-25);
   });
 }
 
@@ -62,7 +65,7 @@ function getPlanetDistance(planetOneId, planetTwoId) {
 }
 
 function planetClicked(planetEl) {
-  var planetId = planetEl.attr('id');
+  var planetId = planetEl.attr("id");
   var planet = planets[planetId];
 
   //delete connections from the selected planet, if they exist
@@ -111,8 +114,6 @@ function planetClicked(planetEl) {
       deltaY = planetTwoy - planetOney;
       deltaX = planetTwox - planetOnex;
       angle = Math.atan2(deltaY, deltaX);
-      //subX = (Math.sin(angle)*2)/planetDistance;
-      //subY = (Math.cos(angle)*2)/planetDistance;
 
       connectionEl.css('left', planetOnex);
       connectionEl.css('top', planetOney - 5);
@@ -136,8 +137,24 @@ function planetClicked(planetEl) {
   }
 }
 
+function requestStarterPlanet(){
+  $(".planet").click(function() {
+    if(starterPlanetSelected == 1){
+      return;
+    };
+    var planetId = $(this).attr("id");
+    var planet = planets[planetId];
+    planet.population = 100000;
+    planet.color = "blue";
+    $("#"+planetId).removeClass("grey");
+    $("#"+planetId).addClass("blue");
+    starterPlanetSelected = 1;
+  });
+}
+
 setupLevel();
 initialDraw();
+requestStarterPlanet();
 setInterval(function() {
 
 }, 33);
