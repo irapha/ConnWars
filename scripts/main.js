@@ -136,7 +136,7 @@ function planetClicked(planetEl) {
     planetEl.toggleClass('selected');
   }
 }
-var starterPlanetId; //DEBUG
+
 function requestStarterPlanet(){
   $(".planet").click(function() {
     if(starterPlanetSelected === 1){
@@ -144,12 +144,11 @@ function requestStarterPlanet(){
     };
     var planetId = $(this).attr("id");
     var planet = planets[planetId];
-    planet.population = 100000;
+    planet.population = 100;
     planet.color = "blue";
     $("#"+planetId).removeClass("grey");
     $("#"+planetId).addClass("blue");
     starterPlanetSelected = 1;
-    starterPlanetId = planetId; //DEBUG
   });
 }
 
@@ -158,7 +157,47 @@ function updatePopulations() {
     giver = planets[connectedPlanets[i].from];
     receiver = planets[connectedPlanets[i].to];
     newPops = getPlanetPopulations(giver, receiver);
+    //if new population is zero (or accidentally negative), change color to grey
+    if(newPops[0] <= 0){
+      newPops[0] = 0;
+      $("#"+giver.id).removeClass(giver.color);
+      $("#"+giver.id).addClass("grey");
+      giver.color = "grey";
+      //delete connection this planet has with others
+      for(var i = 0; i < connectedPlanets.length; i++) {
+        if(connectedPlanets[i].from === giver.id) {
+          connectionId = giver.id + connectedPlanets[i].to;
+          connectedPlanets.splice(i, 1);
+          $("#"+connectionId).remove();
+
+          for(var j = 0; j < connectionIds.length; j++) {
+            if(connectionIds[j] === connectionId) {
+              connectionIds.splice(j, 1);
+            }
+          }
+        }
+      }
+    }
     giver.population = newPops[0];
+    //if new population is negative, change color to oposite
+    if(newPops[1] < 0) {
+      newPops[1] = (-1)*newPops[1];
+      if(receiver.color === "red") {
+        var newColor = "blue";
+      }else if(receiver.color === "blue") {
+        var newColor = "red";
+      }
+      $("#"+receiver.id).removeClass(receiver.color);
+      $("#"+receiver.id).addClass(newColor);
+      receiver.color = newColor;
+    }
+    if(receiver.population === 0) {
+      if(receiver.color === "grey") {
+        $("#"+receiver.id).removeClass(receiver.color);
+        $("#"+receiver.id).addClass(giver.color);
+        receiver.color = giver.color;
+      }
+    }
     receiver.population = newPops[1];
   }
 
