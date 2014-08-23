@@ -70,25 +70,25 @@ function planetClicked(planetEl) {
 
   //delete connections from the selected planet, if they exist
   for(var i = 0; i < connectedPlanets.length; i++) {
-    if(connectedPlanets[i].from == planetId) {
+    if(connectedPlanets[i].from === planetId) {
       connectionId = planetId + connectedPlanets[i].to;
       connectedPlanets.splice(i, 1);
       $("#"+connectionId).remove();
 
       for(var j = 0; j < connectionIds.length; j++) {
-        if(connectionIds[j] == connectionId) {
+        if(connectionIds[j] === connectionId) {
           connectionIds.splice(j, 1);
         }
       }
     }
   }
 
-  if(selectedPlanets.length == 0) {
+  if(selectedPlanets.length === 0) {
     planet.selected = !planet.selected;
     planetEl.toggleClass('selected');
     selectedPlanets.push(planetId);
-  }else if(selectedPlanets.length == 1) {
-    if(selectedPlanets[0] == planetId){
+  }else if(selectedPlanets.length === 1) {
+    if(selectedPlanets[0] === planetId){
       planet.selected = !planet.selected;
       planetEl.toggleClass('selected');
       selectedPlanets = [];
@@ -139,7 +139,7 @@ function planetClicked(planetEl) {
 
 function requestStarterPlanet(){
   $(".planet").click(function() {
-    if(starterPlanetSelected == 1){
+    if(starterPlanetSelected === 1){
       return;
     };
     var planetId = $(this).attr("id");
