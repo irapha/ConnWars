@@ -24,7 +24,14 @@
       .blue {
         background-color: #6EA1D7;
       }
-      .selected {
+      .selected::after {
+        content: '';
+        position: absolute;
+        border-radius: 50%;
+        top: 0;
+        left: 0;
+        width: 46px;
+        height: 46px;
         border: 2px solid white;
       }
     </style>
@@ -33,7 +40,6 @@
   <body>
     <div id='viewport'>
     </div>
-    <script>document.onkeydown = function(e) {e.preventDefault()}</script>
     <script src='scripts/jquery.min.js'></script>
     <script src='scripts/main.js'></script>
   </body>
