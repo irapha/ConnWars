@@ -157,6 +157,7 @@ function updatePopulations() {
     giver = planets[connectedPlanets[i].from];
     receiver = planets[connectedPlanets[i].to];
     newPops = getPlanetPopulations(giver, receiver);
+    //console.log("Giver: " + newPops[0] + " Receiver: " + newPops[1]);
     //if new population is zero (or accidentally negative), change color to grey
     if(newPops[0] <= 0){
       newPops[0] = 0;
