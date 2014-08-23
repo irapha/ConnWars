@@ -70,7 +70,7 @@ function planetClicked(planetEl) {
 
   //delete connections from the selected planet, if they exist
   for(var i = 0; i < connectedPlanets.length; i++) {
-    if(connectedPlanets[i].from === planetId && (selectedPlanets.length == 0)) {
+    if(connectedPlanets[i].from === planetId && (selectedPlanets.length === 0)) {
       connectionId = planetId + connectedPlanets[i].to;
       connectedPlanets.splice(i, 1);
       $("#"+connectionId).remove();
@@ -136,7 +136,7 @@ function planetClicked(planetEl) {
     planetEl.toggleClass('selected');
   }
 }
-
+var starterPlanetId; //DEBUG
 function requestStarterPlanet(){
   $(".planet").click(function() {
     if(starterPlanetSelected === 1){
@@ -149,12 +149,30 @@ function requestStarterPlanet(){
     $("#"+planetId).removeClass("grey");
     $("#"+planetId).addClass("blue");
     starterPlanetSelected = 1;
+    starterPlanetId = planetId; //DEBUG
   });
+}
+
+function updatePopulations() {
+  for(var i = 0; i < connectedPlanets.length; i++) {
+    giver = planets[connectedPlanets[i].from];
+    receiver = planets[connectedPlanets[i].to];
+    newPops = getPlanetPopulations(giver, receiver);
+    giver.population = newPops[0];
+    receiver.population = newPops[1];
+  }
+
+  for(var i = 0; i < planetIds.length; i++) {
+    planet = planets[planetIds[i]];
+    if(planet.population > 0) {
+        planet.population = getNaturalGrowth(planetIds[i]);
+    }
+  }
 }
 
 setupLevel();
 initialDraw();
 requestStarterPlanet();
 setInterval(function() {
-
+  updatePopulations();
 }, 33);

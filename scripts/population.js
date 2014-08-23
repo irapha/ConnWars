@@ -12,36 +12,14 @@ function getPlanetPopulations(giver, receiver){
 
   distance = Math.sqrt(distance_x_sq + distance_y_sq);
 
-  giver.population = giver.population-(giver.population/(10*distance));
+  var giverPopulation = giver.population-(giver.population/(10*distance));
 
-  receiver.population = receiver.population+(giver.population/(10*distance));
+  var receiverPopulation = receiver.population+(giver.population/(10*distance));
 
-  return [giver.population, receiver.population];
-  }
-
-function getNaturalGrowth(planet){
-  return planet.population*GROWTH_RATE;
+  return [giverPopulation, receiverPopulation];
 }
 
-  var planet1 = { population:100000, x:0, y:0};
-  var planet2 = { population:0, x:100, y:100};
-
-  var popsArray;
-
-  for (i = 0; i<20; i++){
-    if(i<10){
-      popsArray = getPlanetPopulations(planet1, planet2);
-      planet1.population = popsArray[0];
-      planet2.population = popsArray[1];
-    }
-
-    else{
-      popsArray = getPlanetPopulations(planet2, planet1);
-      planet2.population = popsArray[0];
-      planet1.population = popsArray[1];
-    }
-
-    console.log("Planet 1: " + planet1.population + " || Planet 2: " + planet2.population);
-    console.log("");
-
-  }
+function getNaturalGrowth(planetId){
+  planet = planets[planetId];
+  return planet.population*GROWTH_RATE;
+}
