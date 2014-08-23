@@ -43,8 +43,8 @@ function initialDraw() {
   planetIds.forEach(function(planetId) {
     var planet = planets[planetId];
     var planetEl = $("#"+planetId);
-    planetEl.css("left", planet.x-25);
-    planetEl.css("top", planet.y-25);
+    planetEl.css("left", planet.x-15);
+    planetEl.css("top", planet.y-15);
   });
 }
 
@@ -209,9 +209,24 @@ function updatePopulations() {
   }
 }
 
+function updatePlanetScales() {
+  for(var i = 0; i < planetIds.length; i++) {
+    planet = planets[planetIds[i]];
+    planetPop = planet.population;
+    if(planetPop > 100) {
+      var planetScale = (0.0000010001)*(planetPop-100) + 1;
+    }else {
+      var planetScale = 1;
+    }
+    //change planet size
+    $("#"+planet.id).css("transform", "scale("+planetScale+", "+planetScale+")")
+  }
+}
+
 setupLevel();
 initialDraw();
 requestStarterPlanet();
 setInterval(function() {
   updatePopulations();
+  updatePlanetScales();
 }, 33);
