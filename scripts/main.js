@@ -17,13 +17,15 @@ function setupLevel() {
     var mirrorX = levelWidth-randomX;
     var mirrorY = levelHeight-randomY;
     var planetId = 'planet' + currentId;
-    planets[planetId] = {color:'grey', x:randomX, y:randomY, id:planetId, selected:false};
+    planets[planetId] = {color:'grey', x:randomX, y:randomY, id:planetId,
+                        selected:false, population:0};
     planetIds.push(planetId);
     viewport.append('<div class="planet grey" id="'+planetId+'"></div>');
     currentId++;
 
     planetId = 'planet' + currentId;
-    planets[planetId] = {color:'grey', x:mirrorX, y:mirrorY, id:planetId, selected:false};
+    planets[planetId] = {color:'grey', x:mirrorX, y:mirrorY, id:planetId,
+                        selected:false, population:0};
     planetIds.push(planetId);
     viewport.append('<div class="planet grey" id="'+planetId+'"></div>');
     currentId++;
@@ -38,16 +40,16 @@ function initialDraw() {
   planetIds.forEach(function(planetId) {
     var planet = planets[planetId];
     var planetEl = $('#'+planetId);
-    planetEl.css('left', planet.x);
-    planetEl.css('top', planet.y);
+    planetEl.css('left', planet.x-25);
+    planetEl.css('top', planet.y-25);
   });
 }
 
 function getPlanetDistance(planetOneId, planetTwoId) {
-  planetOnex = planets[planetOneId].x
-  planetOney = planets[planetOneId].y
-  planetTwox = planets[planetTwoId].x
-  planetTwoy = planets[planetTwoId].y
+  planetOnex = planets[planetOneId].x;
+  planetOney = planets[planetOneId].y;
+  planetTwox = planets[planetTwoId].x;
+  planetTwoy = planets[planetTwoId].y;
 
   deltaY = planetTwoy - planetOney;
   deltaX = planetTwox - planetOnex;
@@ -55,7 +57,7 @@ function getPlanetDistance(planetOneId, planetTwoId) {
   deltaY *= deltaY;
   deltaX *= deltaX;
   distance = Math.sqrt(deltaX + deltaY);
-  
+
   return distance;
 }
 
@@ -68,7 +70,7 @@ function planetClicked(planetEl) {
     if(connectedPlanets[i].from == planetId) {
       connectionId = planetId + connectedPlanets[i].to;
       connectedPlanets.splice(i, 1);
-      viewport.remove(connectionId);
+      $("#"+connectionId).remove();
 
       for(var j = 0; j < connectionIds.length; j++) {
         if(connectionIds[j] == connectionId) {
@@ -101,6 +103,21 @@ function planetClicked(planetEl) {
       connectionEl = $("#"+connectionId);
       connectionEl.css("width", planetDistance);
       connectionIds.push(connectionId);
+
+      planetOnex = planets[selectedPlanets[0]].x;
+      planetOney = planets[selectedPlanets[0]].y;
+      planetTwox = planets[planetId].x;
+      planetTwoy = planets[planetId].y;
+      deltaY = planetTwoy - planetOney;
+      deltaX = planetTwox - planetOnex;
+      angle = Math.atan2(deltaY, deltaX);
+      //subX = (Math.sin(angle)*2)/planetDistance;
+      //subY = (Math.cos(angle)*2)/planetDistance;
+
+      connectionEl.css('left', planetOnex);
+      connectionEl.css('top', planetOney - 5);
+      connectionEl.css("transform", "rotate("+angle+"rad)");
+
       //finish deselecting planets
       selectedPlanets = [];
     }
