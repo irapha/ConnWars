@@ -31,14 +31,16 @@ function setupLevel() {
     allowedCells.splice(allowedCells.indexOf(invertedIndex), 1);
     removeAdjacentIndices(randomCellIndex);
     removeAdjacentIndices(invertedIndex);
-    cellCoords.x*=cellWidth;
-    cellCoords.y*=cellHeight;
-    cellCoords.x += cellWidth/2;
-    cellCoords.y += cellHeight/2;
-    invertedCoords.x*=cellWidth;
-    invertedCoords.y*=cellHeight;
-    invertedCoords.x += cellWidth/2;
-    invertedCoords.y += cellHeight/2;
+    var xAdjustment = ~~(Math.random()*cellWidth/4-cellWidth/8);
+    var yAdjustment = ~~(Math.random()*cellHeight/4-cellHeight/8);
+    cellCoords.x *= cellWidth;
+    cellCoords.y *= cellHeight;
+    cellCoords.x += cellWidth/2 + xAdjustment;
+    cellCoords.y += cellHeight/2 + yAdjustment;
+    invertedCoords.x *= cellWidth;
+    invertedCoords.y *= cellHeight;
+    invertedCoords.x += cellWidth/2 - xAdjustment;
+    invertedCoords.y += cellHeight/2 - yAdjustment;
 
     var planetId = 'planet' + currentId;
     planets[planetId] = {color:'grey', x:cellCoords.x, y:cellCoords.y, id:planetId,
