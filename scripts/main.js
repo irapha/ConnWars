@@ -16,7 +16,7 @@ function setupLevel() {
   var cellWidth = levelWidth/10;
   var cellHeight = levelHeight/10;
   var currentId = 0;
-  var offLimits = [27, 28, 35, 36]; // center four on 8x8 grid
+  var offLimits = [44, 45, 50, 51]; // center four on 10x10 grid
   var allowedCells = [];
   for(var i=0; i<100; i++) {
     if(offLimits.indexOf(i) === -1)
@@ -31,14 +31,16 @@ function setupLevel() {
     allowedCells.splice(allowedCells.indexOf(invertedIndex), 1);
     removeAdjacentIndices(randomCellIndex);
     removeAdjacentIndices(invertedIndex);
-    cellCoords.x*=cellWidth;
-    cellCoords.y*=cellHeight;
-    cellCoords.x += cellWidth/2;
-    cellCoords.y += cellHeight/2;
-    invertedCoords.x*=cellWidth;
-    invertedCoords.y*=cellHeight;
-    invertedCoords.x += cellWidth/2;
-    invertedCoords.y += cellHeight/2;
+    var xAdjustment = ~~(Math.random()*cellWidth/4-cellWidth/8);
+    var yAdjustment = ~~(Math.random()*cellHeight/4-cellHeight/8);
+    cellCoords.x *= cellWidth;
+    cellCoords.y *= cellHeight;
+    cellCoords.x += cellWidth/2 + xAdjustment;
+    cellCoords.y += cellHeight/2 + yAdjustment;
+    invertedCoords.x *= cellWidth;
+    invertedCoords.y *= cellHeight;
+    invertedCoords.x += cellWidth/2 - xAdjustment;
+    invertedCoords.y += cellHeight/2 - yAdjustment;
 
     var planetId = 'planet' + currentId;
     planets[planetId] = {color:'grey', x:cellCoords.x, y:cellCoords.y, id:planetId,
