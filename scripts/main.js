@@ -73,7 +73,8 @@ function planetClicked(planetEl) {
     if(connectedPlanets[i].from === planetId && (selectedPlanets.length === 0)) {
       connectionId = planetId + connectedPlanets[i].to;
       connectedPlanets.splice(i, 1);
-      $("#"+connectionId).remove();
+      $("#"+connectionId+"One").remove();
+      $("#"+connectionId+"Two").remove();
 
       for(var j = 0; j < connectionIds.length; j++) {
         if(connectionIds[j] === connectionId) {
@@ -102,9 +103,12 @@ function planetClicked(planetEl) {
       planet.selected = !planet.selected;
       //draw connection
       planetDistance = getPlanetDistance(selectedPlanets[0], planetId);
-      viewport.append('<div class="connection blue" id="'+connectionId+'"></div>');
-      connectionEl = $("#"+connectionId);
-      connectionEl.css("width", planetDistance);
+      viewport.append('<div class="connection blue left" id="'+connectionId+'One"></div>');
+      viewport.append('<div class="connection blue right" id="'+connectionId+'Two"></div>');
+      connectionElOne = $("#"+connectionId+"One");
+      connectionElTwo = $("#"+connectionId+"Two");
+      connectionElOne.css("width", planetDistance);
+      connectionElTwo.css("width", planetDistance);
       connectionIds.push(connectionId);
 
       planetOnex = planets[selectedPlanets[0]].x;
@@ -115,9 +119,13 @@ function planetClicked(planetEl) {
       deltaX = planetTwox - planetOnex;
       angle = Math.atan2(deltaY, deltaX);
 
-      connectionEl.css('left', planetOnex);
-      connectionEl.css('top', planetOney - 5);
-      connectionEl.css("transform", "rotate("+angle+"rad)");
+      connectionElOne.css('left', planetOnex);
+      connectionElOne.css('top', planetOney - 5);
+      connectionElTwo.css('left', planetOnex);
+      connectionElTwo.css('top', planetOney);
+
+      connectionElOne.css("transform", "rotate("+angle+"rad)");
+      connectionElTwo.css("transform", "rotate("+angle+"rad)");
 
       //finish deselecting planets
       selectedPlanets = [];
