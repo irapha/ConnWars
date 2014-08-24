@@ -91,8 +91,23 @@ function setupLevel() {
     });
   }
 
-  $(".planet").click(function() {
+  $(".planet").click(function(event) {
+    event.stopPropagation();
     planetClicked($(this));
+  });
+
+  $("body").click(function() {
+    if(selectedPlanets.length > 0) {
+      $('#'+selectedPlanets[0]).toggleClass('selected');
+      planets[selectedPlanets[0]].selected = !planets[selectedPlanets[0]].selected;
+
+      if(selectedPlanets > 1) {
+          $('#'+selectedPlanets[1]).toggleClass('selected');
+          planets[selectedPlanets[1]].selected = !planets[selectedPlanets[1]].selected;
+      }
+
+      selectedPlanets = [];
+    }
   });
 }
 
