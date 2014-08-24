@@ -23,14 +23,14 @@ function setupLevel() {
     planets[planetId] = {color:'grey', x:randomX, y:randomY, id:planetId,
                         selected:false, population:0};
     planetIds.push(planetId);
-    viewport.append('<div class="planet grey" id="'+planetId+'"></div>');
+    viewport.append('<div class="planet grey" id="'+planetId+'" align="center"></div>');
     currentId++;
 
     planetId = 'planet' + currentId;
     planets[planetId] = {color:'grey', x:mirrorX, y:mirrorY, id:planetId,
                         selected:false, population:0};
     planetIds.push(planetId);
-    viewport.append('<div class="planet grey" id="'+planetId+'"></div>');
+    viewport.append('<div class="planet grey" id="'+planetId+'" align="center"></div>');
     currentId++;
   }
 
@@ -232,10 +232,23 @@ function updatePlanetScales() {
   }
 }
 
+function writePlanetPopulations() {
+  for(var i = 0; i < planetIds.length; i++) {
+    planet = planets[planetIds[i]];
+    planetPop = ~~planet.population;
+    planetId = planet.id;
+
+    if(planetPop > 0) {
+      $("#"+planetId).html(planetPop);
+    }
+  }
+}
+
 setupLevel();
 initialDraw();
 requestStarterPlanet();
 setInterval(function() {
   updatePopulations();
   updatePlanetScales();
+  writePlanetPopulations();
 }, 33);
