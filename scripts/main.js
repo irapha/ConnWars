@@ -3,35 +3,90 @@ var planetIds = [];
 var selectedPlanets = [];
 var connectedPlanets = [];
 var connectionIds = [];
-var totalPlanets = 10;
-var levelWidth = $(window).width()-100;
-var levelHeight = $(window).height()-100;
+var planetsPerSide = 10;
 var viewport = $('#viewport');
+var levelWidth = viewport.width();
+var levelHeight = viewport.height();
 var selectedPlanet;
 var bluePlanets = [];
 var redPlanets = [];
 var starterPlanetSelected = 0;
 
 function setupLevel() {
-  currentId = 0;
-  for(var i=0; i<totalPlanets; i++) {
-    var randomX = ~~(levelWidth/2)*Math.random();
-    var randomY = ~~(levelHeight)*Math.random();
-    var mirrorX = levelWidth-randomX;
-    var mirrorY = levelHeight-randomY;
+  var cellWidth = levelWidth/10;
+  var cellHeight = levelHeight/10;
+  var currentId = 0;
+  var offLimits = [27, 28, 35, 36]; // center four on 8x8 grid
+  var allowedCells = [];
+  for(var i=0; i<100; i++) {
+    if(offLimits.indexOf(i) === -1)
+      allowedCells.push(i);
+  }
+  for(var i=0; i<planetsPerSide; i++) {
+    var randomCellIndex = allowedCells[~~(Math.random()*allowedCells.length)];
+    var cellCoords = indexToCoords(randomCellIndex);
+    var invertedCoords = {x:9-cellCoords.x, y:9-cellCoords.y};
+    var invertedIndex = coordsToIndex(invertedCoords);
+    allowedCells.splice(allowedCells.indexOf(randomCellIndex), 1);
+    allowedCells.splice(allowedCells.indexOf(invertedIndex), 1);
+    removeAdjacentIndices(randomCellIndex);
+    removeAdjacentIndices(invertedIndex);
+    cellCoords.x*=cellWidth;
+    cellCoords.y*=cellHeight;
+    cellCoords.x += cellWidth/2;
+    cellCoords.y += cellHeight/2;
+    invertedCoords.x*=cellWidth;
+    invertedCoords.y*=cellHeight;
+    invertedCoords.x += cellWidth/2;
+    invertedCoords.y += cellHeight/2;
+
     var planetId = 'planet' + currentId;
-    planets[planetId] = {color:'grey', x:randomX, y:randomY, id:planetId,
+    planets[planetId] = {color:'grey', x:cellCoords.x, y:cellCoords.y, id:planetId,
                         selected:false, population:0};
     planetIds.push(planetId);
     viewport.append('<div class="planet grey" id="'+planetId+'" align="center"></div>');
     currentId++;
 
     planetId = 'planet' + currentId;
-    planets[planetId] = {color:'grey', x:mirrorX, y:mirrorY, id:planetId,
+    planets[planetId] = {color:'grey', x:invertedCoords.x, y:invertedCoords.y, id:planetId,
                         selected:false, population:0};
     planetIds.push(planetId);
     viewport.append('<div class="planet grey" id="'+planetId+'" align="center"></div>');
     currentId++;
+  }
+
+  function indexToCoords(index) {
+    var coords = {};
+    coords.x = index%10;
+    coords.y = ~~(index/10);
+    return coords;
+  }
+  function coordsToIndex(coords) {
+    var index = coords.y*10;
+    index += coords.x;
+    return index;
+  }
+  function removeAdjacentIndices(index) {
+    var coords = indexToCoords(index);
+    var adjacent = [
+      {x:coords.x+1, y:coords.y},
+      {x:coords.x+1, y:coords.y+1},
+      {x:coords.x+1, y:coords.y-1},
+      {x:coords.x-1, y:coords.y},
+      {x:coords.x-1, y:coords.y+1},
+      {x:coords.x-1, y:coords.y-1},
+      {x:coords.x, y:coords.y+1},
+      {x:coords.x, y:coords.y-1}
+    ];
+    adjacent.forEach(function(adjCoords) {
+      if(adjCoords.x<=10 && adjCoords.x>=0 && adjCoords.y<=10 && adjCoords.y>=0) {
+        var adjIndex = coordsToIndex(adjCoords);
+        var allowedIndex = allowedCells.indexOf(adjIndex);
+        if(allowedIndex !== -1) {
+          allowedCells.splice(allowedIndex, 1);
+        }
+      }
+    });
   }
 
   $(".planet").click(function() {
