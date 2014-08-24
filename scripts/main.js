@@ -85,12 +85,11 @@ function planetClicked(planetEl) {
   }
 
   if(selectedPlanets.length === 0) {
-    if(planet.color === "grey") {
-      return;
+    if(planet.color != "grey") {
+      planet.selected = !planet.selected;
+      planetEl.toggleClass('selected');
+      selectedPlanets.push(planetId);
     }
-    planet.selected = !planet.selected;
-    planetEl.toggleClass('selected');
-    selectedPlanets.push(planetId);
   }else if(selectedPlanets.length === 1) {
     if(selectedPlanets[0] === planetId){
       planet.selected = !planet.selected;
@@ -168,9 +167,12 @@ function updatePopulations() {
     giver = planets[connectedPlanets[i].from];
     receiver = planets[connectedPlanets[i].to];
     newPops = getPlanetPopulations(giver, receiver);
-    //console.log("Giver: " + newPops[0] + " Receiver: " + newPops[1]);
+    newPops_zero = ~~newPops[0];
+    newPops_one = ~~newPops[1];
+    var oldGiverColor = giver.color;
+
     //if new population is zero (or accidentally negative), change color to grey
-    if(newPops[0] <= 1){
+    if(newPops_zero <= 0){
       newPops[0] = 0;
       $("#"+giver.id).removeClass(giver.color);
       $("#"+giver.id).addClass("grey");
@@ -180,7 +182,8 @@ function updatePopulations() {
         if(connectedPlanets[i].from === giver.id) {
           connectionId = giver.id + connectedPlanets[i].to;
           connectedPlanets.splice(i, 1);
-          $("#"+connectionId).remove();
+          $("#"+connectionId+"One").remove();
+          $("#"+connectionId+"Two").remove();
 
           for(var j = 0; j < connectionIds.length; j++) {
             if(connectionIds[j] === connectionId) {
@@ -192,7 +195,7 @@ function updatePopulations() {
     }
     giver.population = newPops[0];
     //if new population is negative, change color to oposite
-    if(newPops[1] < 1) {
+    if(newPops_one < 0) {
       newPops[1] = (-1)*newPops[1];
       if(receiver.color === "red") {
         var newColor = "blue";
@@ -202,12 +205,29 @@ function updatePopulations() {
       $("#"+receiver.id).removeClass(receiver.color);
       $("#"+receiver.id).addClass(newColor);
       receiver.color = newColor;
+      //delete all connections from receiver.
+      for(var i = 0; i < connectedPlanets.length; i++) {
+        if(connectedPlanets[i].from === receiver.id) {
+          connectionId = receiver.id + connectedPlanets[i].to;
+          connectedPlanets.splice(i, 1);
+          $("#"+connectionId+"One").remove();
+          $("#"+connectionId+"Two").remove();
+
+          for(var j = 0; j < connectionIds.length; j++) {
+            if(connectionIds[j] === connectionId) {
+              connectionIds.splice(j, 1);
+            }
+          }
+        }
+      }
     }
-    if(receiver.population === 0) {
-      if(receiver.color === "grey") {
+    if(receiver.population < 1) {
+      if(receiver.color === "grey" && oldGiverColor === giver.color) {
         $("#"+receiver.id).removeClass(receiver.color);
-        $("#"+receiver.id).addClass(giver.color);
-        receiver.color = giver.color;
+        $("#"+receiver.id).addClass(oldGiverColor);
+        receiver.color = oldGiverColor;
+      }else {
+        newPops[1] = 0;
       }
     }
     receiver.population = newPops[1];
@@ -247,11 +267,25 @@ function writePlanetPopulations() {
   }
 }
 
+function wipeZeroedPlanets() {
+  for(var i = 0; i < planetIds.length; i++){
+      planet = planets[planetIds[i]];
+      planetPop = ~~planet.population;
+      planetId = planet.id;
+      if(planetPop === 0){
+          $("#"+planetId).removeClass(planet.color);
+          $("#"+planetId).addClass("grey");
+          planet.color = "grey";
+      }
+  }
+}
+
 setupLevel();
 initialDraw();
 requestStarterPlanet();
 setInterval(function() {
   updatePopulations();
+  wipeZeroedPlanets();
   updatePlanetScales();
   writePlanetPopulations();
 }, 33);
