@@ -30,10 +30,19 @@
       .planet.grey {
         background-color: #6E6E6E;
       }
+      @keyframes moveArrows {
+        from {background-position: 0px 0px;}
+        to {background-position: 10px 0px;}
+      }
+      @-webkit-keyframes moveArrows {
+        from {background-position: 0px 0px;}
+        to {background-position: 10px 0px;}
+      }
       .connection {
         height: 10px;
         position: absolute;
         transform-origin: 0% 50%;
+        -webkit-animation: moveArrows linear 0.5s infinite;
       }
       .connection.blue {
         background-image: url("images/blue_lines.gif");
