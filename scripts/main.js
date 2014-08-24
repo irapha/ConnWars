@@ -167,7 +167,7 @@ function updatePopulations() {
     newPops = getPlanetPopulations(giver, receiver);
     //console.log("Giver: " + newPops[0] + " Receiver: " + newPops[1]);
     //if new population is zero (or accidentally negative), change color to grey
-    if(newPops[0] <= 0){
+    if(newPops[0] <= 1){
       newPops[0] = 0;
       $("#"+giver.id).removeClass(giver.color);
       $("#"+giver.id).addClass("grey");
@@ -189,7 +189,7 @@ function updatePopulations() {
     }
     giver.population = newPops[0];
     //if new population is negative, change color to oposite
-    if(newPops[1] < 0) {
+    if(newPops[1] < 1) {
       newPops[1] = (-1)*newPops[1];
       if(receiver.color === "red") {
         var newColor = "blue";
