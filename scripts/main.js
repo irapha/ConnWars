@@ -16,7 +16,7 @@ function setupLevel() {
   var cellWidth = levelWidth/10;
   var cellHeight = levelHeight/10;
   var currentId = 0;
-  var offLimits = [27, 28, 35, 36]; // center four on 8x8 grid
+  var offLimits = [44, 45, 50, 51]; // center four on 10x10 grid
   var allowedCells = [];
   for(var i=0; i<100; i++) {
     if(offLimits.indexOf(i) === -1)
