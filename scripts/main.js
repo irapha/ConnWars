@@ -85,6 +85,9 @@ function planetClicked(planetEl) {
   }
 
   if(selectedPlanets.length === 0) {
+    if(planet.color === "grey") {
+      return;
+    }
     planet.selected = !planet.selected;
     planetEl.toggleClass('selected');
     selectedPlanets.push(planetId);
