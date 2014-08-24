@@ -142,6 +142,7 @@ function planetClicked(planetEl) {
   for(var i = 0; i < connectedPlanets.length; i++) {
     if(connectedPlanets[i].from === planetId && (selectedPlanets.length === 0)) {
       connectionId = planetId + connectedPlanets[i].to;
+      receiver = planets[connectedPlanets[i].to];
       connectedPlanets.splice(i, 1);
       $("#"+connectionId+"One").remove();
       $("#"+connectionId+"Two").remove();
@@ -150,6 +151,14 @@ function planetClicked(planetEl) {
         if(connectionIds[j] === connectionId) {
           connectionIds.splice(j, 1);
         }
+      }
+
+      if(receiver.population < 1) {
+        //fixes bug #14
+        $("#"+receiver.id).removeClass(receiver.color);
+        $("#"+receiver.id).addClass("grey");
+        receiver.color = "grey";
+        receiver.population = 0;
       }
     }
   }
