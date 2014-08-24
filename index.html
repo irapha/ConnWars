@@ -21,7 +21,11 @@
         height: 30px;
         border-radius: 50%;
         position: absolute;
-        z-index: 1;
+        z-index: 2;
+        align: center;
+        color: white;
+        font-size: 8px;
+        line-height: 30px;
       }
       .planet.red {
         background-color: #F26140;
@@ -32,13 +36,20 @@
       .planet.grey {
         background-color: #6E6E6E;
       }
+      @keyframes moveArrows {
+        from {background-position: 0px 0px;}
+        to {background-position: 10px 0px;}
+      }
+      @-webkit-keyframes moveArrows {
+        from {background-position: 0px 0px;}
+        to {background-position: 10px 0px;}
+      }
       .connection {
-        height: 10px;
+        height: 5px;
         position: absolute;
-        transform-origin: 0% 50%;
+        -webkit-animation: moveArrows linear 0.5s infinite;
       }
       .connection.blue {
-        background-image: url("images/blue_lines.gif");
         background-repeat: repeat-x;
         background-size: contain;
       }
@@ -46,6 +57,25 @@
         background-image: url("images/orange_lines.gif");
         background-repeat: repeat-x;
         background-size: contain;
+      }
+      .connection.right {
+        transform-origin: 0% 0%;
+        z-index: 1;
+      }
+      .connection.left {
+        transform-origin: 0% 100%;
+      }
+      .connection.blue.left {
+        background-image: url("images/blue_line_left.gif");
+      }
+      .connection.blue.right {
+        background-image: url("images/blue_line_right.gif");
+      }
+      .connection.red.left {
+        background-image: url("images/blue_red_left.gif");
+      }
+      .connection.red.right {
+        background-image: url("images/blue_red_right.gif");
       }
       .selected::after {
         content: "";

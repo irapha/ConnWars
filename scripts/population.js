@@ -37,5 +37,10 @@ function getPlanetPopulations(giver, receiver){
 
 function getNaturalGrowth(planetId){
   planet = planets[planetId];
+
+  if(planet.population*GROWTH_RATE > 1000000){
+    return 1000000;
+  }
+
   return planet.population*GROWTH_RATE;
 }
