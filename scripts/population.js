@@ -50,9 +50,6 @@ function getNaturalGrowth(planetId){
   }
 
   gRate = GROWTH_RATE;
-  if(planet.population > 200) {
-    gRate *= (100000-planet.population)/1000000;
-  }
 
   gRate += 1;
 

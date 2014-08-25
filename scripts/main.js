@@ -113,6 +113,8 @@ function setupLevel() {
       selectedPlanets = [];
     }
   });
+
+  $("#endmenu").hide();
 }
 
 function initialDraw() {
@@ -606,20 +608,64 @@ function deleteConnectionsToChaoticPlanets() {
   }
 }
 
+function checkWinState() {
+  var foundBlue = 0;
+  var foundRed = 0;
+
+  for(var i = 0; i < planetIds.length; i++) {
+    if(planets[planetIds[i]].color === "blue") {
+      foundBlue += 1;
+      continue;
+    }else if(planets[planetIds[i]].color === "red") {
+      foundRed += 1;
+      continue;
+    }
+  }
+
+  if(foundBlue > 0 && foundRed === 0){
+    return 1; //player won
+  }else if(foundBlue === 0 && foundRed > 0) {
+    return 2; //ai won
+  }else {
+    return 0;
+  }
+}
+
 setupLevel();
 initialDraw();
 requestStarterPlanet();
-setInterval(function() {
+
+var mainLoop = setInterval(function() {
   if(starterPlanetSelected === 1){
+    var whoWon = 0;
+
     updatePopulations();
     wipeZeroedPlanets();
     // updateAIConnectionsVisibility();                                         //DEBUG
     deleteConnectionsToChaoticPlanets();
     updatePlanetScales();
     writePlanetPopulations();
+    whoWon = checkWinState();
+    if(whoWon === 1 || whoWon === 2){
+
+      if(whoWon === 1) {
+        whoWon = "You";
+      }else {
+        whoWon = "A.I.";
+      }
+
+      $(".planet").unbind();
+      $("#endmenu").show();
+      $("#whowon").html(whoWon+" won!");
+      delete whoWon;
+
+      clearInterval(mainLoop);
+      clearInterval(aiChecks);
+    }
   }
 }, 33);
-setInterval(function() {
+
+var aiChecks = setInterval(function() {
   if(starterPlanetSelected === 1) {
     ai.updateConnections();
   }
