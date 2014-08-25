@@ -671,3 +671,18 @@ var aiChecks = setInterval(function() {
     ai.updateConnections();
   }
 }, 5000);
+
+var playing = true;
+$('#mute-button').click(function() {
+  var music = $('#soundloop')[0];
+  if(!playing) {
+    music.play();
+    playing = true;
+    $('#mute-button').html('Mute');
+  }
+  else {
+    music.pause();
+    playing = false;
+    $('#mute-button').html('Unmute');
+  }
+});
