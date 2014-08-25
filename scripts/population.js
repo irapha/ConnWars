@@ -12,8 +12,8 @@ function getPlanetPopulations(giver, receiver){
 
   distance = Math.sqrt(distance_x_sq + distance_y_sq);
 
-  var numTransferred = Math.atan( distance*-1 - giver.population);
-  
+  var numTransferred = (0.03)*(-1)*Math.atan(distance*(-1) - giver.population);
+
   var giverPopulation = giver.population-numTransferred;
 
   var receiverPopulation;
