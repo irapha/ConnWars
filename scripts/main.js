@@ -24,6 +24,9 @@ function setupLevel() {
       allowedCells.push(i);
   }
   for(var i=0; i<planetsPerSide; i++) {
+    if(allowedCells.length === 0) {
+      continue;
+    }
     var randomCellIndex = allowedCells[~~(Math.random()*allowedCells.length)];
     var cellCoords = indexToCoords(randomCellIndex);
     var invertedCoords = {x:9-cellCoords.x, y:9-cellCoords.y};
@@ -61,6 +64,7 @@ function setupLevel() {
   function indexToCoords(index) {
     var coords = {};
     coords.x = index%10;
+    console.log(index + " -> " + coords.x);
     coords.y = ~~(index/10);
     return coords;
   }
@@ -378,7 +382,7 @@ function updatePopulations() {
     var oldGiverColor = giver.color;
 
     //if new population is zero (or accidentally negative), change color to grey
-    if(newPops_zero <= 0){
+    if(newPops_zero <= 0) {
       newPops[0] = 0;
       $("#"+giver.id).removeClass(giver.color);
       $("#"+giver.id).addClass("grey");
