@@ -18,6 +18,24 @@
         background-repeat: repeat;
         margin: 50px;
       }
+      #startmenu {
+        postition: absolute;
+        top: 100px;
+        z-index: 2;
+      }
+      #blackmenu {
+        width: 300px;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+      #welcome {
+        color: white;
+        font-weight: bold;
+        font-size: 25px;
+      }
+      #settlemsg {
+        color: white;
+        font-weight: bold;
+      }
       .planet {
         width: 30px;
         height: 30px;
@@ -106,6 +124,12 @@
   </head>
 
   <body>
+    <div id='startmenu' align="center">
+      <div id="blackmenu">
+        <div id='welcome' align="center">Welcome to ConnWars</div>
+        <div id='settlemsg' align="center">Please select a planet to settle.</div>
+      </div>
+    </div>
     <div id="viewport">
     </div>
     <script src="scripts/jquery.min.js"></script>
