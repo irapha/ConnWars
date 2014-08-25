@@ -364,6 +364,7 @@ function requestStarterPlanet(){
     $("#"+planetId).addClass("blue");
     starterPlanetSelected = 1;
     ai.selectStarterPlanet();
+    $("#startmenu").hide();
   });
 }
 
