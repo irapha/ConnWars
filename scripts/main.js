@@ -259,6 +259,8 @@ function requestStarterPlanet(){
     $("#"+planetId).removeClass("grey");
     $("#"+planetId).addClass("blue");
     starterPlanetSelected = 1;
+
+    ai.selectStarterPlanet();
   });
 }
 
@@ -384,7 +386,6 @@ function wipeZeroedPlanets() {
 
 setupLevel();
 initialDraw();
-ai.selectCapital();
 requestStarterPlanet();
 setInterval(function() {
   updatePopulations();
