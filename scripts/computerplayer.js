@@ -94,7 +94,8 @@ var ai = {
     // Connect the closest red planet from the selection to the blue planet
     var redAttackers = [];
     availableRedPlanets.forEach(function(planetId) {
-      redAttackers.push(planets[planetId]);
+      if(planets[planetId].population>lowestBluePop)
+        redAttackers.push(planets[planetId]);
     });
     if(availableRedPlanets.length>3 && redAttackers.length && lowestBluePopPlanet) {
       var closestRedAttacker = this.closestPlanet(lowestBluePopPlanet, redAttackers);

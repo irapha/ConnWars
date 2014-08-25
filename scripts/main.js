@@ -669,4 +669,4 @@ var aiChecks = setInterval(function() {
   if(starterPlanetSelected === 1) {
     ai.updateConnections();
   }
-}, 2000);
+}, 5000);
