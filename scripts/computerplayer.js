@@ -5,7 +5,7 @@ var ai = {
     var starterPlanet = $(availablePlanets[starterPlanetIndex]);
     var planetId = starterPlanet.attr("id");
     var planet = planets[planetId];
-    planet.population = 100;
+    planet.population = 1000;
     planet.color = "red";
     starterPlanet.removeClass("grey");
     starterPlanet.addClass("red");

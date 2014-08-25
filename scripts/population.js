@@ -1,4 +1,4 @@
-var GROWTH_RATE = 1.0002;
+var GROWTH_RATE = 0.002;
 var DEPLETION_RATE = 0.9998
 var MAX_POPULATION = 100000;
 var distance;
@@ -13,7 +13,7 @@ function getPlanetPopulations(giver, receiver){
 
   distance = Math.sqrt(distance_x_sq + distance_y_sq);
 
-  var numTransferred = (0.03)*(-1)*Math.atan(distance*(-1) - giver.population);
+  var numTransferred = (0.2)*(-1)*Math.atan(distance*(-1) - giver.population);
 
   var giverPopulation = giver.population - numTransferred;
 
@@ -49,10 +49,18 @@ function getNaturalGrowth(planetId){
     return planet.population*DEPLETION_RATE;
   }
 
-  if(planet.population*GROWTH_RATE > 1000000){
+  gRate = GROWTH_RATE;
+  if(planet.population > 200) {
+    gRate *= (100000-planet.population)/1000000;
+  }
+
+  gRate += 1;
+
+  newPopulation = planet.population*gRate;
+
+  if(newPopulation > 1000000){
     return 1000000;
   }
 
-
-  return planet.population*GROWTH_RATE;
+  return newPopulation
 }

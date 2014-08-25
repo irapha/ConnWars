@@ -349,7 +349,7 @@ function requestStarterPlanet(){
     };
     var planetId = $(this).attr("id");
     var planet = planets[planetId];
-    planet.population = 100;
+    planet.population = 1000;
     planet.color = "blue";
     $("#"+planetId).removeClass("grey");
     $("#"+planetId).addClass("blue");
