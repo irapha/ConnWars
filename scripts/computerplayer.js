@@ -15,6 +15,8 @@ var ai = {
     var availableRedPlanets = [];
     var unavailableRedPlanets
     var availableBluePlanets = [];
+    var lowestBluePop = 1000000000;
+    var lowestBluePopPlanet = null;
     var greyPlanets = [];
     var evacuatingPlanets = [];
     var closingConnections = [];
@@ -26,6 +28,10 @@ var ai = {
       }
       else if(planet.color==='blue') {
         availableBluePlanets.push(planetId);
+        if(planet.population<lowestBluePop) {
+          lowestBluePop = planet.population;
+          lowestBluePopPlanet = planet;
+        }
       }
       else {
         greyPlanets.push(planets[planetId]);
@@ -86,6 +92,14 @@ var ai = {
     // Find the lowest populated blue planet where a connection isn't open
     // Find all red planets with populations higher than that blue planet that don't have connections
     // Connect the closest red planet from the selection to the blue planet
+    var redAttackers = [];
+    availableRedPlanets.forEach(function(planetId) {
+      redAttackers.push(planets[planetId]);
+    });
+    if(availableRedPlanets.length>3 && redAttackers.length && lowestBluePopPlanet) {
+      var closestRedAttacker = this.closestPlanet(lowestBluePopPlanet, redAttackers);
+      this.connectPlanets(closestRedAttacker, lowestBluePopPlanet);
+    }
   },
 
   updateConnectionsRandom: function() {
