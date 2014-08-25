@@ -295,29 +295,29 @@ function planetClicked(planetEl, isAI) {
       giverColor = planets[selectedPlanetsAI[0]].color;
 
       /**/                                                                      //DEBUG START
-      planetDistance = getPlanetDistance(selectedPlanetsAI[0], planetId);
-      viewport.append('<div class="connection '+giverColor+' left" id="'+connectionId+'One"></div>');
-      viewport.append('<div class="connection '+giverColor+' right" id="'+connectionId+'Two"></div>');
-      connectionElOne = $("#"+connectionId+"One");
-      connectionElTwo = $("#"+connectionId+"Two");
-      connectionElOne.css("width", planetDistance);
-      connectionElTwo.css("width", planetDistance);
+      planetDistance = getPlanetDistance(selectedPlanetsAI[0], planetId);       //DEBUG
+      viewport.append('<div class="connection '+giverColor+' left" id="'+connectionId+'One"></div>'); //DEBUG
+      viewport.append('<div class="connection '+giverColor+' right" id="'+connectionId+'Two"></div>'); //DEBUG
+      connectionElOne = $("#"+connectionId+"One");                              //DEBUG
+      connectionElTwo = $("#"+connectionId+"Two");                              //DEBUG
+      connectionElOne.css("width", planetDistance);                             //DEBUG
+      connectionElTwo.css("width", planetDistance);                             //DEBUG
 
-      planetOnex = planets[selectedPlanetsAI[0]].x;
-      planetOney = planets[selectedPlanetsAI[0]].y;
-      planetTwox = planets[planetId].x;
-      planetTwoy = planets[planetId].y;
-      deltaY = planetTwoy - planetOney;
-      deltaX = planetTwox - planetOnex;
-      angle = Math.atan2(deltaY, deltaX);
+      planetOnex = planets[selectedPlanetsAI[0]].x;                             //DEBUG
+      planetOney = planets[selectedPlanetsAI[0]].y;                             //DEBUG
+      planetTwox = planets[planetId].x;                                         //DEBUG
+      planetTwoy = planets[planetId].y;                                         //DEBUG
+      deltaY = planetTwoy - planetOney;                                         //DEBUG
+      deltaX = planetTwox - planetOnex;                                         //DEBUG
+      angle = Math.atan2(deltaY, deltaX);                                       //DEBUG
 
-      connectionElOne.css('left', planetOnex);
-      connectionElOne.css('top', planetOney - 5);
-      connectionElTwo.css('left', planetOnex);
-      connectionElTwo.css('top', planetOney);
+      connectionElOne.css('left', planetOnex);                                  //DEBUG
+      connectionElOne.css('top', planetOney - 5);                               //DEBUG
+      connectionElTwo.css('left', planetOnex);                                  //DEBUG
+      connectionElTwo.css('top', planetOney);                                   //DEBUG
 
-      connectionElOne.css("transform", "rotate("+angle+"rad)");
-      connectionElTwo.css("transform", "rotate("+angle+"rad)");
+      connectionElOne.css("transform", "rotate("+angle+"rad)");                 //DEBUG
+      connectionElTwo.css("transform", "rotate("+angle+"rad)");                 //DEBUG
       /**/                                                                      //DEBUG END
 
       connectionIds.push(connectionId);
@@ -549,7 +549,7 @@ requestStarterPlanet();
 setInterval(function() {
   updatePopulations();
   wipeZeroedPlanets();
-  // updateAIConnectionsVisibility();                                           DEBUG
+  // updateAIConnectionsVisibility();                                           //DEBUG
   updatePlanetScales();
   writePlanetPopulations();
   ai.updateConnections();

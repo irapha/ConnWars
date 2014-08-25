@@ -17,7 +17,7 @@ function getPlanetPopulations(giver, receiver){
   var giverPopulation = giver.population-numTransferred;
 
   var receiverPopulation;
-f
+
   if(giver.color === receiver.color || receiver.color.toLowerCase() === "grey".toLowerCase() ){
     receiverPopulation = receiver.population + numTransferred;
   }
@@ -46,7 +46,7 @@ function getNaturalGrowth(planetId){
 
 
   return 1000000/(1 + (Math.pow(Math.E, -1*t))
-  
+
   */
   if(planet.population*GROWTH_RATE > 1000000){
     return 1000000;
