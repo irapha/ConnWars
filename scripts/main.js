@@ -384,10 +384,12 @@ function wipeZeroedPlanets() {
 
 setupLevel();
 initialDraw();
+ai.selectCapital();
 requestStarterPlanet();
 setInterval(function() {
   updatePopulations();
   wipeZeroedPlanets();
   updatePlanetScales();
   writePlanetPopulations();
+  ai.updateConnections();
 }, 33);
