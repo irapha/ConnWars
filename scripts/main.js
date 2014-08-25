@@ -94,7 +94,7 @@ function setupLevel() {
 
   $(".planet").click(function(event) {
     event.stopPropagation();
-    planetClicked($(this));
+    planetClicked($(this), false);
   });
 
   $("body").click(function() {
@@ -140,12 +140,12 @@ function getPlanetDistance(planetOneId, planetTwoId) {
 var isAI;
 
 function planetClicked(planetEl, isAI) {
-  isAI = typeof isAI !== undefined ? 0 : 1;
+  //isAI = typeof isAI === undefined ? (false) : (true);
   if(isAI) {
     var userColor = "red";
   }else {
     var userColor = "blue";
-    isAI = 0;
+    //isAI = false;
   }
 
   var planetId = planetEl.attr("id");
@@ -275,21 +275,50 @@ function planetClicked(planetEl, isAI) {
   }else if(selectedPlanetsAI.length === 0 && isAI) { //start AI
     if(planet.color === userColor) {
       planet.selectedAI = !planet.selectedAI;
+      planetEl.toggleClass('selected');                                         //DEBUG
       selectedPlanetsAI.push(planetId);
     }
   }else if(selectedPlanetsAI.length === 1 && isAI) {
     if(selectedPlanetsAI[0] === planetId){
       planet.selectedAI = !planet.selectedAI;
+      planetEl.toggleClass('selected');                                         //DEBUG
       selectedPlanetsAI = [];
     }else {
       //make connection between the two planets
-      connectedPlanets.push({from: selectedPlanets[0], to: planetId});
-      connectionId = selectedPlanets[0] + planetId;
+      connectedPlanets.push({from: selectedPlanetsAI[0], to: planetId});
+      connectionId = selectedPlanetsAI[0] + planetId;
       //deselect planets
       planets[selectedPlanetsAI[0]].selectedAI = !planets[selectedPlanetsAI[0]].selectedAI;
+      $('#'+selectedPlanetsAI[0]).toggleClass('selected');                      //DEBUG
       planet.selectedAI = !planet.selectedAI;
       //draw connection
       giverColor = planets[selectedPlanetsAI[0]].color;
+
+      /**/                                                                      //DEBUG START
+      planetDistance = getPlanetDistance(selectedPlanetsAI[0], planetId);
+      viewport.append('<div class="connection '+giverColor+' left" id="'+connectionId+'One"></div>');
+      viewport.append('<div class="connection '+giverColor+' right" id="'+connectionId+'Two"></div>');
+      connectionElOne = $("#"+connectionId+"One");
+      connectionElTwo = $("#"+connectionId+"Two");
+      connectionElOne.css("width", planetDistance);
+      connectionElTwo.css("width", planetDistance);
+
+      planetOnex = planets[selectedPlanetsAI[0]].x;
+      planetOney = planets[selectedPlanetsAI[0]].y;
+      planetTwox = planets[planetId].x;
+      planetTwoy = planets[planetId].y;
+      deltaY = planetTwoy - planetOney;
+      deltaX = planetTwox - planetOnex;
+      angle = Math.atan2(deltaY, deltaX);
+
+      connectionElOne.css('left', planetOnex);
+      connectionElOne.css('top', planetOney - 5);
+      connectionElTwo.css('left', planetOnex);
+      connectionElTwo.css('top', planetOney);
+
+      connectionElOne.css("transform", "rotate("+angle+"rad)");
+      connectionElTwo.css("transform", "rotate("+angle+"rad)");
+      /**/                                                                      //DEBUG END
 
       connectionIds.push(connectionId);
 
@@ -306,7 +335,7 @@ function planetClicked(planetEl, isAI) {
     planets[selectedPlanetsAI[1]].selectedAI = !planets[selectedPlanetsAI[1]].selectedAI;
 
     selectedPlanetsAI = [];
-    //select current planet
+    // select current planet
     selectedPlanetsAI.push(planetId);
   }
 
@@ -325,7 +354,6 @@ function requestStarterPlanet(){
     $("#"+planetId).removeClass("grey");
     $("#"+planetId).addClass("blue");
     starterPlanetSelected = 1;
-
     ai.selectStarterPlanet();
   });
 }
@@ -431,7 +459,7 @@ function writePlanetPopulations() {
 
     // to make red planets' colors visible, remove this comparison from the loop
     // planet.color === "blue"
-    if(planetPop > 0 && planet.color === "blue") {
+  if(planetPop > 0 /*&& planet.color === "blue"*/) {                            //DEBUG
       $("#"+planetId).html(planetPop);
     }else if(planetPop === 0) {
       $("#"+planetId).html("");
@@ -521,7 +549,7 @@ requestStarterPlanet();
 setInterval(function() {
   updatePopulations();
   wipeZeroedPlanets();
-  updateAIConnectionsVisibility();
+  // updateAIConnectionsVisibility();                                           DEBUG
   updatePlanetScales();
   writePlanetPopulations();
   ai.updateConnections();

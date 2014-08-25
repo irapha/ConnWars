@@ -16,7 +16,6 @@ var ai = {
     var redPlanets = [];
     var connectedRedPlanets = [];
     var unpopulatedPlanets = [];
-
     connectedPlanets.forEach(function(connection) {
       if(redPlanets.indexOf(connection.from)!==-1) {
         connectedRedPlanets.push(connection.from);
@@ -33,8 +32,8 @@ var ai = {
     var newConnectedPlanet = unconnectedRedPlanets[~~(Math.random()*unconnectedRedPlanets.length)];
     var randomPlanet = planetIds[~~(Math.random()*planetIds.length)];
     if(newConnectedPlanet && randomPlanet && newConnectedPlanet!==randomPlanet) {
-      planetClicked($('#'+newConnectedPlanet), 1);
-      planetClicked($('#'+randomPlanet), 1);
+      planetClicked($('#'+newConnectedPlanet), true);
+      planetClicked($('#'+randomPlanet), true);
     }
   }
 }
