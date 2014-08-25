@@ -1,4 +1,4 @@
-var GROWTH_RATE = 1.002;
+var GROWTH_RATE = 1.0002;
 var MAX_POPULATION = 100000;
 var distance;
 

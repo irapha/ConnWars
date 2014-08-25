@@ -314,7 +314,7 @@ function updatePopulations() {
 
   for(var i = 0; i < planetIds.length; i++) {
     planet = planets[planetIds[i]];
-    if(planet.population > 0) {
+    if(planet.population > 1) {
         planet.population = getNaturalGrowth(planetIds[i]);
     }
   }
@@ -342,6 +342,8 @@ function writePlanetPopulations() {
 
     if(planetPop > 0) {
       $("#"+planetId).html(planetPop);
+    }else if(planetPop === 0) {
+      $("#"+planetId).html("");
     }
   }
 }
