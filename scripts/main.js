@@ -325,6 +325,8 @@ function requestStarterPlanet(){
     $("#"+planetId).removeClass("grey");
     $("#"+planetId).addClass("blue");
     starterPlanetSelected = 1;
+
+    ai.selectStarterPlanet();
   });
 }
 
@@ -522,4 +524,5 @@ setInterval(function() {
   updateAIConnectionsVisibility();
   updatePlanetScales();
   writePlanetPopulations();
+  ai.updateConnections();
 }, 33);
