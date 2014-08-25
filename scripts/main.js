@@ -134,37 +134,49 @@ function getPlanetDistance(planetOneId, planetTwoId) {
   return distance;
 }
 
-function planetClicked(planetEl) {
+var isAI;
+
+function planetClicked(planetEl, isAI) {
+  isAI = typeof isAI !== undefined ? 0 : 1;
+  if(isAI) {
+    var userColor = "red";
+  }else {
+    var userColor = "blue";
+  }
+
   var planetId = planetEl.attr("id");
   var planet = planets[planetId];
 
-  //delete connections from the selected planet, if they exist
-  for(var i = 0; i < connectedPlanets.length; i++) {
-    if(connectedPlanets[i].from === planetId && (selectedPlanets.length === 0)) {
-      connectionId = planetId + connectedPlanets[i].to;
-      receiver = planets[connectedPlanets[i].to];
-      connectedPlanets.splice(i, 1);
-      $("#"+connectionId+"One").remove();
-      $("#"+connectionId+"Two").remove();
+  //delete connections from the selected planet, if they exist,
+  //and if this planet belongs to the player/AI
+  if(planet.color === userColor) {
+    for(var i = 0; i < connectedPlanets.length; i++) {
+      if(connectedPlanets[i].from === planetId && (selectedPlanets.length === 0)) {
+        connectionId = planetId + connectedPlanets[i].to;
+        receiver = planets[connectedPlanets[i].to];
+        connectedPlanets.splice(i, 1);
+        $("#"+connectionId+"One").remove();
+        $("#"+connectionId+"Two").remove();
 
-      for(var j = 0; j < connectionIds.length; j++) {
-        if(connectionIds[j] === connectionId) {
-          connectionIds.splice(j, 1);
+        for(var j = 0; j < connectionIds.length; j++) {
+          if(connectionIds[j] === connectionId) {
+            connectionIds.splice(j, 1);
+          }
         }
-      }
 
-      if(receiver.population < 1) {
-        //fixes bug #14
-        $("#"+receiver.id).removeClass(receiver.color);
-        $("#"+receiver.id).addClass("grey");
-        receiver.color = "grey";
-        receiver.population = 0;
+        if(receiver.population < 1) {
+          //fixes bug #14
+          $("#"+receiver.id).removeClass(receiver.color);
+          $("#"+receiver.id).addClass("grey");
+          receiver.color = "grey";
+          receiver.population = 0;
+        }
       }
     }
   }
 
   if(selectedPlanets.length === 0) {
-    if(planet.color != "grey") {
+    if(planet.color === userColor) {
       planet.selected = !planet.selected;
       planetEl.toggleClass('selected');
       selectedPlanets.push(planetId);
@@ -214,6 +226,9 @@ function planetClicked(planetEl) {
       selectedPlanets = [];
     }
   }else if(selectedPlanets.length > 2) {
+    //this will only run if, for some reason,
+    //a bug happened and two planets remained selected.
+
     //deselects other selected planets
     $('#'+selectedPlanets[0]).toggleClass('selected');
     planets[selectedPlanets[0]].selected = !planets[selectedPlanets[0]].selected;
@@ -226,6 +241,8 @@ function planetClicked(planetEl) {
     selectedPlanets.push(planetId);
     planetEl.toggleClass('selected');
   }
+
+  delete isAI;
 }
 
 function requestStarterPlanet(){
