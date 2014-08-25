@@ -64,7 +64,6 @@ function setupLevel() {
   function indexToCoords(index) {
     var coords = {};
     coords.x = index%10;
-    console.log(index + " -> " + coords.x);
     coords.y = ~~(index/10);
     return coords;
   }
@@ -611,13 +610,17 @@ setupLevel();
 initialDraw();
 requestStarterPlanet();
 setInterval(function() {
-  updatePopulations();
-  wipeZeroedPlanets();
-  // updateAIConnectionsVisibility();                                           //DEBUG
-  deleteConnectionsToChaoticPlanets();
-  updatePlanetScales();
-  writePlanetPopulations();
+  if(starterPlanetSelected === 1){
+    updatePopulations();
+    wipeZeroedPlanets();
+    // updateAIConnectionsVisibility();                                         //DEBUG
+    deleteConnectionsToChaoticPlanets();
+    updatePlanetScales();
+    writePlanetPopulations();
+  }
 }, 33);
 setInterval(function() {
-  ai.updateConnections();
+  if(starterPlanetSelected === 1) {
+    ai.updateConnections();
+  }
 }, 2000);
