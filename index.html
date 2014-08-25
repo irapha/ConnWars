@@ -35,6 +35,20 @@
         font-weight: bold;
         font-size: 25px;
       }
+      #endmenu {
+        postition: absolute;
+        top: 100px;
+        z-index: 2;
+      }
+      #blackmenuend {
+        width: 300px;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+      #whowon {
+        color: white;
+        font-weight: bold;
+        font-size: 25px;
+      }
       #settlemsg {
         color: white;
         font-weight: bold;
@@ -140,6 +154,11 @@
       <div id="blackmenu">
         <div id='welcome' align="center">Welcome to ConnWars</div>
         <div id='settlemsg' align="center">Please select a planet to settle.</div>
+      </div>
+    </div>
+    <div id='endmenu' align="center">
+      <div id="blackmenuend">
+        <div id='whowon' align="center"></div>
       </div>
     </div>
     <div id="viewport">
