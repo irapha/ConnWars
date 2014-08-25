@@ -552,5 +552,7 @@ setInterval(function() {
   // updateAIConnectionsVisibility();                                           //DEBUG
   updatePlanetScales();
   writePlanetPopulations();
-  ai.updateConnections();
 }, 33);
+setInterval(function() {
+  ai.updateConnections();
+}, 2000);
