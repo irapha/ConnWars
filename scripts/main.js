@@ -185,9 +185,11 @@ function planetClicked(planetEl) {
       planets[selectedPlanets[0]].selected = !planets[selectedPlanets[0]].selected;
       planet.selected = !planet.selected;
       //draw connection
+      giverColor = planets[selectedPlanets[0]].color;
+
       planetDistance = getPlanetDistance(selectedPlanets[0], planetId);
-      viewport.append('<div class="connection blue left" id="'+connectionId+'One"></div>');
-      viewport.append('<div class="connection blue right" id="'+connectionId+'Two"></div>');
+      viewport.append('<div class="connection '+giverColor+' left" id="'+connectionId+'One"></div>');
+      viewport.append('<div class="connection '+giverColor+' right" id="'+connectionId+'Two"></div>');
       connectionElOne = $("#"+connectionId+"One");
       connectionElTwo = $("#"+connectionId+"Two");
       connectionElOne.css("width", planetDistance);
