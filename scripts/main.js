@@ -24,6 +24,9 @@ function setupLevel() {
       allowedCells.push(i);
   }
   for(var i=0; i<planetsPerSide; i++) {
+    if(allowedCells.length === 0) {
+      continue;
+    }
     var randomCellIndex = allowedCells[~~(Math.random()*allowedCells.length)];
     var cellCoords = indexToCoords(randomCellIndex);
     var invertedCoords = {x:9-cellCoords.x, y:9-cellCoords.y};
@@ -364,6 +367,7 @@ function requestStarterPlanet(){
     $("#"+planetId).addClass("blue");
     starterPlanetSelected = 1;
     ai.selectStarterPlanet();
+    $("#startmenu").hide();
   });
 }
 
@@ -377,7 +381,7 @@ function updatePopulations() {
     var oldGiverColor = giver.color;
 
     //if new population is zero (or accidentally negative), change color to grey
-    if(newPops_zero <= 0){
+    if(newPops_zero <= 0) {
       newPops[0] = 0;
       $("#"+giver.id).removeClass(giver.color);
       $("#"+giver.id).addClass("grey");
@@ -606,13 +610,17 @@ setupLevel();
 initialDraw();
 requestStarterPlanet();
 setInterval(function() {
-  updatePopulations();
-  wipeZeroedPlanets();
-  // updateAIConnectionsVisibility();                                           //DEBUG
-  deleteConnectionsToChaoticPlanets();
-  updatePlanetScales();
-  writePlanetPopulations();
+  if(starterPlanetSelected === 1){
+    updatePopulations();
+    wipeZeroedPlanets();
+    // updateAIConnectionsVisibility();                                         //DEBUG
+    deleteConnectionsToChaoticPlanets();
+    updatePlanetScales();
+    writePlanetPopulations();
+  }
 }, 33);
 setInterval(function() {
-  ai.updateConnections();
+  if(starterPlanetSelected === 1) {
+    ai.updateConnections();
+  }
 }, 2000);
