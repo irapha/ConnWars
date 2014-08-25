@@ -45,14 +45,14 @@ function setupLevel() {
 
     var planetId = 'planet' + currentId;
     planets[planetId] = {color:'grey', x:cellCoords.x, y:cellCoords.y, id:planetId,
-                        selected:false, population:0, selectedAI:false};
+                        selected:false, population:0, selectedAI:false, inChaos:false};
     planetIds.push(planetId);
     viewport.append('<div class="planet grey" id="'+planetId+'" align="center"></div>');
     currentId++;
 
     planetId = 'planet' + currentId;
     planets[planetId] = {color:'grey', x:invertedCoords.x, y:invertedCoords.y, id:planetId,
-                        selected:false, population:0, selectedAI:false};
+                        selected:false, population:0, selectedAI:false, inChaos:false};
     planetIds.push(planetId);
     viewport.append('<div class="planet grey" id="'+planetId+'" align="center"></div>');
     currentId++;
@@ -433,6 +433,34 @@ function updatePopulations() {
     planet = planets[planetIds[i]];
     if(planet.population > 1) {
         planet.population = getNaturalGrowth(planetIds[i]);
+        //check for chaos
+        if(planet.population === 1000000) {
+          planet.inChaos = true;
+          $("#"+planet.id).addClass("chaos");
+          //delete all connections TO this planet
+          for(var j = 0; j < connectedPlanets.length; j++) {
+            if(connectedPlanets[j].to === planet.id) {
+              connectionId = connectedPlanets[j].from + connectedPlanets[j].to;
+              connectedPlanets.splice(j, 1);
+
+              var connExists = $("#"+connectionId+"One");
+              if(connExists.length !== 0) {
+                //connection is visible. undraw
+                $("#"+connectionId+"One").remove();
+                $("#"+connectionId+"Two").remove();
+              }
+
+              for(var k = 0; k < connectionIds.length; k++) {
+                if(connectionIds[k] === connectionId) {
+                  connectionIds.splice(k, 1);
+                }
+              }
+            }
+          }
+        }else if(planet.inChaos === true && planet.population <= 500000) {
+          planet.inChaos = false;
+          $("#"+planet.id).removeClass("chaos");
+        }
     }
   }
 }
@@ -543,6 +571,28 @@ function updateAIConnectionsVisibility() {
   }
 }
 
+function deleteConnectionsToChaoticPlanets() {
+  for(var i = 0; i < connectedPlanets.length; i++) {
+    if(planets[connectedPlanets[i].to].inChaos === true) {
+      connectionId = connectedPlanets[i].from + connectedPlanets[i].to;
+      connectedPlanets.splice(i, 1);
+
+      var connExists = $("#"+connectionId+"One");
+      if(connExists.length !== 0) {
+        //connection is visible. undraw
+        $("#"+connectionId+"One").remove();
+        $("#"+connectionId+"Two").remove();
+      }
+
+      for(var k = 0; k < connectionIds.length; k++) {
+        if(connectionIds[k] === connectionId) {
+          connectionIds.splice(k, 1);
+        }
+      }
+    }
+  }
+}
+
 setupLevel();
 initialDraw();
 requestStarterPlanet();
@@ -550,6 +600,7 @@ setInterval(function() {
   updatePopulations();
   wipeZeroedPlanets();
   // updateAIConnectionsVisibility();                                           //DEBUG
+  deleteConnectionsToChaoticPlanets();
   updatePlanetScales();
   writePlanetPopulations();
 }, 33);

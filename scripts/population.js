@@ -1,4 +1,5 @@
 var GROWTH_RATE = 1.0002;
+var DEPLETION_RATE = 0.9998
 var MAX_POPULATION = 100000;
 var distance;
 
@@ -14,11 +15,11 @@ function getPlanetPopulations(giver, receiver){
 
   var numTransferred = (0.03)*(-1)*Math.atan(distance*(-1) - giver.population);
 
-  var giverPopulation = giver.population-numTransferred;
+  var giverPopulation = giver.population - numTransferred;
 
   var receiverPopulation;
 
-  if(giver.color === receiver.color || receiver.color.toLowerCase() === "grey".toLowerCase() ){
+  if(giver.color === receiver.color || receiver.color.toLowerCase() === "grey".toLowerCase()){
     receiverPopulation = receiver.population + numTransferred;
   }
 
@@ -26,7 +27,7 @@ function getPlanetPopulations(giver, receiver){
     receiverPopulation = receiver.population - numTransferred;
   }
 
-  if(giverPopulation >1000000){
+  if(giverPopulation > 1000000){
     giverPopulation = 1000000;
   }
 
@@ -41,13 +42,13 @@ function getNaturalGrowth(planetId){
   planet = planets[planetId];
 
   /*
-
   t is a time variable. This code is commented to prevent disturbance with existing code in main.js. Must confer to determine how to best find time since initial population
-
-
   return 1000000/(1 + (Math.pow(Math.E, -1*t))
-
   */
+  if(planet.inChaos){
+    return planet.population*DEPLETION_RATE;
+  }
+
   if(planet.population*GROWTH_RATE > 1000000){
     return 1000000;
   }

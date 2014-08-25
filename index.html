@@ -78,6 +78,16 @@
       .connection.red.right {
         background-image: url("images/orange_line_right.gif");
       }
+      .chaos::before {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        top: 0;
+        left: 0;
+        width: 26px;
+        height: 26px;
+        border: 2px solid red;
+      }
       .selected::after {
         content: "";
         position: absolute;
@@ -87,6 +97,9 @@
         width: 26px;
         height: 26px;
         border: 2px solid white;
+      }
+      .selected.chaos::after {
+        border: 2px dashed white;
       }
     </style>
   </head>
