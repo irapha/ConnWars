@@ -218,6 +218,15 @@ function planetClicked(planetEl, isAI) {
       planetEl.toggleClass('selected');
       selectedPlanets = [];
     }else {
+      if(planets[selectedPlanets[0]].color !== userColor) {
+        unselect = planets[selectedPlanets[0]];
+        unselect.selected = !unselect.selected;
+        $("#"+unselect.id).toggleClass('selected');
+        selectedPlanets = [];
+        delete isAI;
+        return;
+      }
+
       //make connection between the two planets
       connectedPlanets.push({from: selectedPlanets[0], to: planetId});
       connectionId = selectedPlanets[0] + planetId;
@@ -349,7 +358,7 @@ function requestStarterPlanet(){
     };
     var planetId = $(this).attr("id");
     var planet = planets[planetId];
-    planet.population = 100;
+    planet.population = 1000;
     planet.color = "blue";
     $("#"+planetId).removeClass("grey");
     $("#"+planetId).addClass("blue");

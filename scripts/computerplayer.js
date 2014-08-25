@@ -5,7 +5,7 @@ var ai = {
     var starterPlanet = $(availablePlanets[starterPlanetIndex]);
     var planetId = starterPlanet.attr("id");
     var planet = planets[planetId];
-    planet.population = 100;
+    planet.population = 1000;
     planet.color = "red";
     starterPlanet.removeClass("grey");
     starterPlanet.addClass("red");
@@ -51,7 +51,7 @@ var ai = {
       // Find all red connections to red planets
       // If the to planet has a population higher than 10% of the from planet, remove that connection
       else if(from.color==='red' && to.color==='red'
-          && to.population/from.population>0.3) {
+          && to.population/from.population>0.1) {
         self.closeConnection(from);
       }
 
