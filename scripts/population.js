@@ -12,16 +12,18 @@ function getPlanetPopulations(giver, receiver){
 
   distance = Math.sqrt(distance_x_sq + distance_y_sq);
 
-  var giverPopulation = giver.population-(giver.population/(10*distance));
+  var numTransferred = Math.atan( distance*-1 - giver.Population);
+
+  var giverPopulation = giver.population-numTransferred;
 
   var receiverPopulation;
-
+f
   if(giver.color === receiver.color || receiver.color.toLowerCase() === "grey".toLowerCase() ){
-    receiverPopulation = receiver.population+(giver.population/(10*distance));
+    receiverPopulation = receiver.population + numTransferred;
   }
 
   else{
-    receiverPopulation = receiver.population-(giver.population/(10*distance));
+    receiverPopulation = receiver.population - numTransferred;
   }
 
   if(giverPopulation >1000000){
@@ -38,9 +40,18 @@ function getPlanetPopulations(giver, receiver){
 function getNaturalGrowth(planetId){
   planet = planets[planetId];
 
+  /*
+
+  t is a time variable. This code is commented to prevent disturbance with existing code in main.js. Must confer to determine how to best find time since initial population
+
+
+  return 1000000/(1 + (Math.pow(Math.E, -1*t))
+  
+  */
   if(planet.population*GROWTH_RATE > 1000000){
     return 1000000;
   }
+
 
   return planet.population*GROWTH_RATE;
 }
