@@ -16,6 +16,8 @@ var ai = {
     var unavailableRedPlanets
     var availableBluePlanets = [];
     var greyPlanets = [];
+    var evacuatingPlanets = [];
+    var closingConnections = [];
 
     planetIds.forEach(function(planetId) {
       var planet = planets[planetId];
@@ -46,13 +48,14 @@ var ai = {
       else if(from.color==='blue' && to.color==='red'
           && from.population>to.population) {
         self.evacuatePlanet(to);
+        evacuatingPlanets.push(to.id);
       }
-
       // Find all red connections to red planets
       // If the to planet has a population higher than 10% of the from planet, remove that connection
       else if(from.color==='red' && to.color==='red'
-          && to.population/from.population>0.1) {
-        self.closeConnection(from);
+          && to.population/from.population>0.1
+          && greyPlanets.length) {
+        closingConnections.push(from);
       }
 
       if(from.color==='blue' && availableBluePlanets.indexOf(from.id)!==-1) {
@@ -64,15 +67,21 @@ var ai = {
         availableRedPlanets.splice(index, 1);
       }
     });
+    closingConnections.forEach(function(closingConnection) {
+      if(evacuatingPlanets.indexOf(closingConnection.id)===-1)
+        self.closeConnection(closingConnection);
+    });
 
     // Find highest populated red planet
     // Choose the closest grey planet and make a connection
-    availableRedPlanets.sort(function(a, b) {
-      return planets[b].population-planets[a].population;
-    });
-    var highestPopulatedRed = planets[availableRedPlanets[0]];
-    var greyPlanet = this.closestPlanet(highestPopulatedRed, greyPlanets);
-    this.connectPlanets(highestPopulatedRed, greyPlanet);
+    if(availableRedPlanets.length && greyPlanets.length) {
+      availableRedPlanets.sort(function(a, b) {
+        return planets[b].population-planets[a].population;
+      });
+      var highestPopulatedRed = planets[availableRedPlanets[0]];
+      var greyPlanet = this.closestPlanet(highestPopulatedRed, greyPlanets);
+      this.connectPlanets(highestPopulatedRed, greyPlanet);
+    }
 
     // Find the lowest populated blue planet where a connection isn't open
     // Find all red planets with populations higher than that blue planet that don't have connections
@@ -125,7 +134,15 @@ var ai = {
   },
 
   evacuatePlanet: function(planet) {
+    var evacuationRoutes = [];
 
+    planetIds.forEach(function(planetId) {
+      if(planets[planetId].color==='red' || planets[planetId].color==='grey') {
+        evacuationRoutes.push(planets[planetId]);
+      }
+    });
+    var evacuationPlanet = this.closestPlanet(planet, evacuationRoutes);
+    this.connectPlanets(planet, evacuationPlanet);
   },
 
   connectPlanets: function(planet1, planet2) {
