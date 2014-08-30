@@ -81,10 +81,41 @@
         from {background-position: 0px 0px;}
         to {background-position: 10px 0px;}
       }
+      @-o-keyframes moveArrows {
+        from {background-position: 0px 0px;}
+        to {background-position: 10px 0px;}
+      }
+      @-moz-keyframes moveArrows {
+        from {background-position: 0px 0px;}
+        to {background-position: 10px 0px;}
+      }
+      @keyframes enterChaos {
+        from {background-color: red;
+              opacity: 1;}
+        to {opacity: 0;}
+      }
+      @-webkit-keyframes enterChaos {
+        from {background-color: red;
+              opacity: 1;}
+        to {opacity: 0;}
+      }
+      @-o-keyframes enterChaos {
+        from {background-color: red;
+              opacity: 1;}
+        to {opacity: 0;}
+      }
+      @-moz-keyframes enterChaos {
+        from {background-color: red;
+              opacity: 1;}
+        to {opacity: 0;}
+      }
       .connection {
         height: 5px;
         position: absolute;
         -webkit-animation: moveArrows linear 0.5s infinite;
+        -moz-animation: moveArrows linear 0.5s infinite;
+        -o-animation: moveArrows linear 0.5s infinite;
+        animation: moveArrows linear 0.5s infinite;
       }
       .connection.blue {
         background-repeat: repeat-x;
@@ -123,6 +154,11 @@
         width: 26px;
         height: 26px;
         border: 2px solid red;
+
+        -webkit-animation: enterChaos 1s;
+        -moz-animation: enterChaos 1s;
+        -o-animation: enterChaos 1s;
+        animation: enterChaos 1s;
       }
       .selected::after {
         content: "";
