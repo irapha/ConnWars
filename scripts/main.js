@@ -437,6 +437,25 @@ function updatePopulations() {
         $("#"+receiver.id).removeClass(receiver.color);
         $("#"+receiver.id).addClass(oldGiverColor);
         receiver.color = oldGiverColor;
+
+        //check if, by mistake, this planet has active connections.
+        for(var i = 0; i < connectedPlanets.length; i++) {
+          if(connectedPlanets[i].from === receiver.id) {
+            connectionId = receiver.id + connectedPlanets[i].to;
+            connectedPlanets.splice(i, 1);
+
+            if($("#"+connectionId+"One").length !== 0) {
+              $("#"+connectionId+"One").remove();
+              $("#"+connectionId+"Two").remove();
+            }
+
+            for(var j = 0; j < connectionIds.length; j++) {
+              if(connectionIds[j] === connectionId) {
+                connectionIds.splice(j, 1);
+              }
+            }
+          }
+        }
       }else {
         if(receiver.color === "grey") {
           newPops[1] = 0;
@@ -582,6 +601,58 @@ function updateAIConnectionsVisibility() {
             //connection is visible. undraw
             $("#"+connectionId+"One").remove();
             $("#"+connectionId+"Two").remove();
+          }
+        }
+      }
+    }else if(planet.color == "grey") {
+      var redConns = [];
+      var foundBlue = 0;
+
+      for(var j = 0; j < connectedPlanets.length; j++) {
+        giverColor = planets[connectedPlanets[j].from].color;
+
+        if(connectedPlanets[j].to === planetId
+              && giverColor === "red") {
+
+          conObj = {giver: connectedPlanets[j].from, receiver: connectedPlanets[j].to};
+
+          redConns.push(conObj);
+        }else if(connectedPlanets[j].to === planetId
+              && receiverColor === "blue") {
+          foundBlue = 1;
+        }
+      }
+
+      if(foundBlue > 0) {
+        for(conn in redConns) {
+          //check if connection is visible.
+          connId = conn.giver + conn.receiver;
+          var connExists = $("#"+connId+"One");
+          if(connExists.length === 0) {
+            //connection is invisible. draw
+            planetDistance = getPlanetDistance(conn.giver, conn.receiver);
+            viewport.append('<div class="connection '+planets[conn.giver].color+' left" id="'+connId+'One"></div>');
+            viewport.append('<div class="connection '+planets[conn.giver].color+' right" id="'+connId+'Two"></div>');
+            connectionElOne = $("#"+connId+"One");
+            connectionElTwo = $("#"+connId+"Two");
+            connectionElOne.css("width", planetDistance);
+            connectionElTwo.css("width", planetDistance);
+
+            planetOnex = planets[conn.giver].x;
+            planetOney = planets[conn.giver].y;
+            planetTwox = planets[conn.receiver].x;
+            planetTwoy = planets[conn.receiver].y;
+            deltaY = planetTwoy - planetOney;
+            deltaX = planetTwox - planetOnex;
+            angle = Math.atan2(deltaY, deltaX);
+
+            connectionElOne.css('left', planetOnex);
+            connectionElOne.css('top', planetOney - 5);
+            connectionElTwo.css('left', planetOnex);
+            connectionElTwo.css('top', planetOney);
+
+            connectionElOne.css("transform", "rotate("+angle+"rad)");
+            connectionElTwo.css("transform", "rotate("+angle+"rad)");
           }
         }
       }
