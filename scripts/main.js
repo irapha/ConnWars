@@ -289,13 +289,13 @@ function planetClicked(planetEl, isAI) {
   }else if(selectedPlanetsAI.length === 0 && isAI) { //start AI
     if(planet.color === userColor) {
       planet.selectedAI = !planet.selectedAI;
-      // planetEl.toggleClass('selected');                                         //DEBUG
+      planetEl.toggleClass('selected');                                         //DEBUG
       selectedPlanetsAI.push(planetId);
     }
   }else if(selectedPlanetsAI.length === 1 && isAI) {
     if(selectedPlanetsAI[0] === planetId){
       planet.selectedAI = !planet.selectedAI;
-      // planetEl.toggleClass('selected');                                         //DEBUG
+      planetEl.toggleClass('selected');                                         //DEBUG
       selectedPlanetsAI = [];
     }else {
       //make connection between the two planets
@@ -303,12 +303,12 @@ function planetClicked(planetEl, isAI) {
       connectionId = selectedPlanetsAI[0] + planetId;
       //deselect planets
       planets[selectedPlanetsAI[0]].selectedAI = !planets[selectedPlanetsAI[0]].selectedAI;
-      // $('#'+selectedPlanetsAI[0]).toggleClass('selected');                      //DEBUG
+      $('#'+selectedPlanetsAI[0]).toggleClass('selected');                      //DEBUG
       planet.selectedAI = !planet.selectedAI;
       //draw connection
       giverColor = planets[selectedPlanetsAI[0]].color;
 
-      /*                                                                      //DEBUG START
+      /**/                                                                      //DEBUG START
       planetDistance = getPlanetDistance(selectedPlanetsAI[0], planetId);       //DEBUG
       viewport.append('<div class="connection '+giverColor+' left" id="'+connectionId+'One"></div>'); //DEBUG
       viewport.append('<div class="connection '+giverColor+' right" id="'+connectionId+'Two"></div>'); //DEBUG
@@ -332,7 +332,7 @@ function planetClicked(planetEl, isAI) {
 
       connectionElOne.css("transform", "rotate("+angle+"rad)");                 //DEBUG
       connectionElTwo.css("transform", "rotate("+angle+"rad)");                 //DEBUG
-      */                                                                      //DEBUG END
+      /**/                                                                      //DEBUG END
 
       connectionIds.push(connectionId);
 
@@ -363,7 +363,7 @@ function requestStarterPlanet(){
     };
     var planetId = $(this).attr("id");
     var planet = planets[planetId];
-    planet.population = 500;
+    planet.population = 100;
     planet.color = "blue";
     $("#"+planetId).removeClass("grey");
     $("#"+planetId).addClass("blue");
@@ -382,7 +382,7 @@ function updatePopulations() {
     newPops_one = ~~newPops[1];
     var oldGiverColor = giver.color;
 
-    //if new population is zero (or accidentally negative), change color to grey
+    //if new population is zero, change color to grey
     if(newPops_zero <= 0) {
       newPops[0] = 0;
       $("#"+giver.id).removeClass(giver.color);
@@ -438,7 +438,9 @@ function updatePopulations() {
         $("#"+receiver.id).addClass(oldGiverColor);
         receiver.color = oldGiverColor;
       }else {
-        newPops[1] = 0;
+        if(receiver.color === "grey") {
+          newPops[1] = 0;
+        }
       }
     }
     receiver.population = newPops[1];
@@ -449,7 +451,7 @@ function updatePopulations() {
     if(planet.population > 1) {
         planet.population = getNaturalGrowth(planetIds[i]);
         //check for chaos
-        if(planet.population === 1000000) {
+        if(planet.population === 1000) {
           planet.inChaos = true;
           $("#"+planet.id).addClass("chaos");
           //delete all connections TO this planet
@@ -472,7 +474,7 @@ function updatePopulations() {
               }
             }
           }
-        }else if(planet.inChaos === true && planet.population <= 500000) {
+        }else if(planet.inChaos === true && planet.population <= 500) {
           planet.inChaos = false;
           $("#"+planet.id).removeClass("chaos");
         }
@@ -484,8 +486,8 @@ function updatePlanetScales() {
   for(var i = 0; i < planetIds.length; i++) {
     planet = planets[planetIds[i]];
     planetPop = planet.population;
-    if(planetPop > 100) {
-      var planetScale = (0.0000010001)*(planetPop-100) + 1;
+    if(planetPop > 50) {
+      var planetScale = (0.0011)*(planet.population-100) + 1;
     }else {
       var planetScale = 1;
     }
@@ -500,9 +502,9 @@ function writePlanetPopulations() {
     planetPop = ~~planet.population;
     planetId = planet.id;
 
-    // to make red planets' colors visible, remove this comparison from the loop
+    // to make red planets' pops visible, remove this comparison from the loop
     // planet.color === "blue"
-  if(planetPop > 0 && planet.color === "blue") {                            //comment planet.color to make ai pops invisible
+  if(planetPop > 0 /*&& planet.color === "blue"*/) {                                //DEBUG
       $("#"+planetId).html(planetPop);
     }else if(planetPop === 0) {
       $("#"+planetId).html("");
@@ -515,6 +517,7 @@ function wipeZeroedPlanets() {
       planet = planets[planetIds[i]];
       planetPop = ~~planet.population;
       planetId = planet.id;
+
       if(planetPop === 0){
           $("#"+planetId).removeClass(planet.color);
           $("#"+planetId).addClass("grey");
@@ -537,7 +540,6 @@ function updateAIConnectionsVisibility() {
           connectionId = connectedPlanets[j].from + planetId;
           //check if connection is visible.
           var connExists = $("#"+connectionId+"One");
-          console.log(connExists);
           if(connExists.length === 0) {
             //connection is invisible. draw
             planetDistance = getPlanetDistance(giverId, planetId);
@@ -642,7 +644,7 @@ var mainLoop = setInterval(function() {
 
     updatePopulations();
     wipeZeroedPlanets();
-    updateAIConnectionsVisibility();                                         //DEBUG
+    // updateAIConnectionsVisibility();                                         //DEBUG
     deleteConnectionsToChaoticPlanets();
     updatePlanetScales();
     writePlanetPopulations();
