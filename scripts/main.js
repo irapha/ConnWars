@@ -473,22 +473,24 @@ function updatePopulations() {
         if(planet.population === 1000) {
           planet.inChaos = true;
           $("#"+planet.id).addClass("chaos");
-          //delete all connections TO this planet
+          //delete all connections TO this planet, coming from planets of the same color
           for(var j = 0; j < connectedPlanets.length; j++) {
             if(connectedPlanets[j].to === planet.id) {
-              connectionId = connectedPlanets[j].from + connectedPlanets[j].to;
-              connectedPlanets.splice(j, 1);
+              if(planets[connectedPlanets[j].to].color === planets[connectedPlanets[j].from].color) {
+                connectionId = connectedPlanets[j].from + connectedPlanets[j].to;
+                connectedPlanets.splice(j, 1);
 
-              var connExists = $("#"+connectionId+"One");
-              if(connExists.length !== 0) {
-                //connection is visible. undraw
-                $("#"+connectionId+"One").remove();
-                $("#"+connectionId+"Two").remove();
-              }
+                var connExists = $("#"+connectionId+"One");
+                if(connExists.length !== 0) {
+                  //connection is visible. undraw
+                  $("#"+connectionId+"One").remove();
+                  $("#"+connectionId+"Two").remove();
+                }
 
-              for(var k = 0; k < connectionIds.length; k++) {
-                if(connectionIds[k] === connectionId) {
-                  connectionIds.splice(k, 1);
+                for(var k = 0; k < connectionIds.length; k++) {
+                  if(connectionIds[k] === connectionId) {
+                    connectionIds.splice(k, 1);
+                  }
                 }
               }
             }
@@ -663,6 +665,24 @@ function updateAIConnectionsVisibility() {
 function deleteConnectionsToChaoticPlanets() {
   for(var i = 0; i < connectedPlanets.length; i++) {
     if(planets[connectedPlanets[i].to].inChaos === true) {
+      if(planets[connectedPlanets[i].to].color === planets[connectedPlanets[i].from].color) {
+        connectionId = connectedPlanets[i].from + connectedPlanets[i].to;
+        connectedPlanets.splice(i, 1);
+
+        var connExists = $("#"+connectionId+"One");
+        if(connExists.length !== 0) {
+          //connection is visible. undraw
+          $("#"+connectionId+"One").remove();
+          $("#"+connectionId+"Two").remove();
+        }
+
+        for(var k = 0; k < connectionIds.length; k++) {
+          if(connectionIds[k] === connectionId) {
+            connectionIds.splice(k, 1);
+          }
+        }
+      }
+    }else if(planets[connectedPlanets[i].from].inChaos === true) {
       connectionId = connectedPlanets[i].from + connectedPlanets[i].to;
       connectedPlanets.splice(i, 1);
 
