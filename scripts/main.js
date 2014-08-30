@@ -211,7 +211,7 @@ function planetClicked(planetEl, isAI) {
     }
   }
 
-  if(selectedPlanets.length === 0 && !isAI) {
+  if(selectedPlanets.length === 0 && !isAI && planet.inChaos === false) {
     if(planet.color === userColor) {
       planet.selected = !planet.selected;
       planetEl.toggleClass('selected');
@@ -802,7 +802,7 @@ var mainLoop = setInterval(function() {
 
 var aiChecks = setInterval(function() {
   if(starterPlanetSelected === 1) {
-    ai.updateConnections();
+    // ai.updateConnections();
   }
 }, 5000);
 

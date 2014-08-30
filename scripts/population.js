@@ -2,9 +2,12 @@ var GROWTH_RATE = 0.002;
 var DEPLETION_RATE = 0.9998
 var MAX_POPULATION = 1000;
 var distance;
+var maxDistance = Math.sqrt((levelWidth*levelWidth + levelHeight*levelHeight));
+var KAY = 0.6;
 
-//problems: grey planets tha won't turn
-//small pops wont go down. is it too big a nat growth?
+function getNumBabies(population) {
+  return population + 0.6*(Math.pow(((1000 - 80)/((1000 - 100))), 33/600)*population - population);
+}
 
 function getPlanetPopulations(giver, receiver){
   distance_x = giver.x - receiver.x;
@@ -13,7 +16,11 @@ function getPlanetPopulations(giver, receiver){
   distance_y_sq = distance_y * distance_y;
   distance = Math.sqrt(distance_x_sq + distance_y_sq);
 
-  var numTransferred = (0.2)*Math.atan(distance + giver.population);
+  var numTransferred = (Math.pow((getNumBabies(giver.population) - giver.population), 2)*KAY)/Math.pow((distance/maxDistance), 2);
+
+  if(giver.population < 12) {
+    numTransferred = 0.016;
+  }
 
   var giverPopulation = giver.population - numTransferred;
   var receiverPopulation;
@@ -42,8 +49,7 @@ function getNaturalGrowth(planetId){
     return planet.population * DEPLETION_RATE;
   }
 
-  //this works so beautifully. Nevur change pls
-  newPopulation = planet.population + Math.pow(((1000000 - 10)/((1000000 - 500)*planet.population)), 33/100);
+  newPopulation = getNumBabies(planet.population);
 
   if(newPopulation > 999){
     return 1000;
