@@ -289,13 +289,13 @@ function planetClicked(planetEl, isAI) {
   }else if(selectedPlanetsAI.length === 0 && isAI) { //start AI
     if(planet.color === userColor) {
       planet.selectedAI = !planet.selectedAI;
-      planetEl.toggleClass('selected');                                         //DEBUG
+      // planetEl.toggleClass('selected');                                         //DEBUG
       selectedPlanetsAI.push(planetId);
     }
   }else if(selectedPlanetsAI.length === 1 && isAI) {
     if(selectedPlanetsAI[0] === planetId){
       planet.selectedAI = !planet.selectedAI;
-      planetEl.toggleClass('selected');                                         //DEBUG
+      // planetEl.toggleClass('selected');                                         //DEBUG
       selectedPlanetsAI = [];
     }else {
       //make connection between the two planets
@@ -303,12 +303,12 @@ function planetClicked(planetEl, isAI) {
       connectionId = selectedPlanetsAI[0] + planetId;
       //deselect planets
       planets[selectedPlanetsAI[0]].selectedAI = !planets[selectedPlanetsAI[0]].selectedAI;
-      $('#'+selectedPlanetsAI[0]).toggleClass('selected');                      //DEBUG
+      // $('#'+selectedPlanetsAI[0]).toggleClass('selected');                      //DEBUG
       planet.selectedAI = !planet.selectedAI;
       //draw connection
       giverColor = planets[selectedPlanetsAI[0]].color;
 
-      /**/                                                                      //DEBUG START
+      /*                                                                      //DEBUG START
       planetDistance = getPlanetDistance(selectedPlanetsAI[0], planetId);       //DEBUG
       viewport.append('<div class="connection '+giverColor+' left" id="'+connectionId+'One"></div>'); //DEBUG
       viewport.append('<div class="connection '+giverColor+' right" id="'+connectionId+'Two"></div>'); //DEBUG
@@ -332,7 +332,7 @@ function planetClicked(planetEl, isAI) {
 
       connectionElOne.css("transform", "rotate("+angle+"rad)");                 //DEBUG
       connectionElTwo.css("transform", "rotate("+angle+"rad)");                 //DEBUG
-      /**/                                                                      //DEBUG END
+      */                                                                      //DEBUG END
 
       connectionIds.push(connectionId);
 
@@ -507,7 +507,7 @@ function updatePlanetScales() {
   for(var i = 0; i < planetIds.length; i++) {
     planet = planets[planetIds[i]];
     planetPop = planet.population;
-    if(planetPop > 50) {
+    if(planetPop > 1) {
       var planetScale = (0.0011)*(planet.population-100) + 1;
     }else {
       var planetScale = 1;
@@ -525,7 +525,7 @@ function writePlanetPopulations() {
 
     // to make red planets' pops visible, remove this comparison from the loop
     // planet.color === "blue"
-  if(planetPop > 0 /*&& planet.color === "blue"*/) {                                //DEBUG
+  if(planetPop > 0 && planet.color === "blue") {                                //DEBUG
       $("#"+planetId).html(planetPop);
     }else if(planetPop === 0) {
       $("#"+planetId).html("");
@@ -600,13 +600,46 @@ function updateAIConnectionsVisibility() {
           //check if connection is visible.
           var connExists = $("#"+connectionId+"One");
           if(connExists.length !== 0) {
-            //connection is visible. undraw
-            $("#"+connectionId+"One").remove();
-            $("#"+connectionId+"Two").remove();
+            //connection is visible. undraw, but only if the planet doesn't have any other blue conns to it.
+
+            var redConns = [];
+            var foundBlue = 0;
+
+            for(var k = 0; k < connectedPlanets.length; k++) {
+              giverColor = planets[connectedPlanets[k].from].color;
+
+              if(connectedPlanets[k].to === planetId
+                    && giverColor === "red") {
+
+                conObj = {giver: connectedPlanets[k].from, receiver: connectedPlanets[k].to};
+
+                redConns.push(conObj);
+              }else if(connectedPlanets[k].to === planetId
+                    && giverColor === "blue") {
+                foundBlue = 1;
+              }
+            }
+
+            if(foundBlue === 0 && redConns.length > 0) {
+              for(conn in redConns) {
+                conn = redConns[conn];
+
+                //check if connection is visible.
+                connId = conn.giver + conn.receiver;
+
+                var connExists = $("#"+connId+"One");
+
+                if(connExists.length !== 0) {
+                  //connection is visible. undraw
+                  $("#"+connId+"One").remove();
+                  $("#"+connId+"Two").remove();
+                }
+              }
+            }
           }
         }
       }
-    }else if(planet.color == "grey") {
+    }else if(true) {
       var redConns = [];
       var foundBlue = 0;
 
@@ -620,16 +653,20 @@ function updateAIConnectionsVisibility() {
 
           redConns.push(conObj);
         }else if(connectedPlanets[j].to === planetId
-              && receiverColor === "blue") {
+              && giverColor === "blue") {
           foundBlue = 1;
         }
       }
 
-      if(foundBlue > 0) {
+      if(foundBlue > 0 && redConns.length > 0) {
         for(conn in redConns) {
+          conn = redConns[conn];
+
           //check if connection is visible.
           connId = conn.giver + conn.receiver;
+
           var connExists = $("#"+connId+"One");
+
           if(connExists.length === 0) {
             //connection is invisible. draw
             planetDistance = getPlanetDistance(conn.giver, conn.receiver);
@@ -735,7 +772,7 @@ var mainLoop = setInterval(function() {
 
     updatePopulations();
     wipeZeroedPlanets();
-    // updateAIConnectionsVisibility();                                         //DEBUG
+    updateAIConnectionsVisibility();                                         //DEBUG
     deleteConnectionsToChaoticPlanets();
     updatePlanetScales();
     writePlanetPopulations();
