@@ -802,7 +802,7 @@ var mainLoop = setInterval(function() {
 
 var aiChecks = setInterval(function() {
   if(starterPlanetSelected === 1) {
-    // ai.updateConnections();
+    ai.updateConnections();
   }
 }, 5000);
 
