@@ -525,9 +525,9 @@ function writePlanetPopulations() {
 
     // to make red planets' pops visible, remove this comparison from the loop
     // planet.color === "blue"
-  if(planetPop > 0 && planet.color === "blue") {                                //DEBUG
+    if(planetPop > 0 && planet.color === "blue") {                                //DEBUG
       $("#"+planetId).html(planetPop);
-    }else if(planetPop === 0) {
+    }else if(planetPop === 0 || planet.color === "red") {
       $("#"+planetId).html("");
     }
   }
