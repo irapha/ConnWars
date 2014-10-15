@@ -193,6 +193,52 @@
         border: 2px solid white;
         cursor: pointer;
       }
+      @keyframes pieRotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      @keyframes pieFill {
+        0% { opacity: 0; }
+        50%, 100% { opacity: 1; }
+      }
+      @keyframes pieMask {
+        0% { opacity: 1; }
+        50%, 100% { opacity: 0; }
+      }
+      .pie-wrapper {
+        width: 100%;
+        height: 100%;
+        position: relative;
+      }
+      .pie {
+        width: 50%;
+        height: 100%;
+        position: absolute;
+        background-color: blue;
+      }
+      .pie-spinner {
+        border-radius: 15px 0 0 15px;
+        z-index: 5;
+        border-right: none;
+        animation: pieRotate 5s linear infinite;
+      }
+      .pie-filler {
+        border-radius: 0 15px 15px 0;
+        z-index: 4;
+        border-left: none;
+        animation: pieFill 5s steps(1, end) infinite;
+        left: 50%;
+        opacity: 0;
+      }
+      .pie-mask {
+        width: 50%;
+        height: 100%;
+        position: absolute;
+        z-index: 6;
+        opacity: 1;
+        background: inherit;
+        animation: pieMask 5s steps(1, end) infinite;
+      }
     </style>
   </head>
 

@@ -51,14 +51,14 @@ function setupLevel() {
     planets[planetId] = {color:'grey', x:cellCoords.x, y:cellCoords.y, id:planetId,
                         selected:false, population:0, selectedAI:false, inChaos:false};
     planetIds.push(planetId);
-    viewport.append('<div class="planet grey" id="'+planetId+'" align="center"></div>');
+    viewport.append('<div class="planet grey" id="'+planetId+'" align="center"><div class="pie-wrapper"><div class="pie pie-spinner"></div><div class="pie pie-filler"></div><div class="pie-mask"></div></div></div>');
     currentId++;
 
     planetId = 'planet' + currentId;
     planets[planetId] = {color:'grey', x:invertedCoords.x, y:invertedCoords.y, id:planetId,
                         selected:false, population:0, selectedAI:false, inChaos:false};
     planetIds.push(planetId);
-    viewport.append('<div class="planet grey" id="'+planetId+'" align="center"></div>');
+    viewport.append('<div class="planet grey" id="'+planetId+'" align="center"><div class="pie-wrapper"><div class="pie pie-spinner"></div><div class="pie pie-filler"></div><div class="pie-mask"></div></div></div>');
     currentId++;
   }
 
