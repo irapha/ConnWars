@@ -64,6 +64,19 @@
         font-size: 8px;
         line-height: 30px;
       }
+      .population-wrapper {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 7;
+        align: center;
+        color: white;
+        font-size: 8px;
+        line-height: 30px;
+      }
       .planet.red {
         background-color: #F26140;
       }
@@ -171,9 +184,11 @@
         width: 26px;
         height: 26px;
         border: 2px solid white;
+        z-index:8;
       }
       .selected.chaos::after {
         border: 2px dashed white;
+        z-index:8;
       }
       #mute-button {
         position: absolute;
@@ -245,6 +260,8 @@
         width: 100%;
         height: 100%;
         position: relative;
+        border-radius: 15px 15px 15px 15px;
+        background: inherit;
       }
       .pie {
         width: 50%;
@@ -284,7 +301,7 @@
         opacity: 1;
         border-radius: 15px 0 0 15px;
         border-left: none;
-        background: #6E6E6E;
+        background: inherit;
         -webkit-animation: piemask 5s steps(1, end) infinite;
         -moz-animation: piemask 5s steps(1, end) infinite;
         -o-animation: piemask 5s steps(1, end) infinite;

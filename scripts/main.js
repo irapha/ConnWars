@@ -51,7 +51,7 @@ function setupLevel() {
     planets[planetId] = {color:'grey', x:cellCoords.x, y:cellCoords.y, id:planetId,
                         selected:false, population:0, selectedAI:false, inChaos:false};
     planetIds.push(planetId);
-    viewport.append('<div class="planet grey" id="'+planetId+'" align="center"><div class="pie-wrapper"><div class="pie pie-spinner"></div><div class="pie pie-filler"></div><div class="pie-mask"></div></div></div>');
+    viewport.append('<div class="planet grey" id="'+planetId+'" align="center"><div class="population-wrapper"></div><div class="pie-wrapper"><div class="pie pie-spinner"></div><div class="pie pie-filler"></div><div class="pie-mask"></div></div></div>');
     // TODO: the insides of the planet div will have to be added AT THE TIME OF THE START OF THE ANIMATION. I know this sucks, but it is necessary because otherwise innerHTML would be overwritten everytime we write the population inside the planet... Unless........ WHen we write the population we can write directly to the child text node right? would that prevernt the rest of the inner HTML form being overwritten?
     currentId++;
 
@@ -59,7 +59,7 @@ function setupLevel() {
     planets[planetId] = {color:'grey', x:invertedCoords.x, y:invertedCoords.y, id:planetId,
                         selected:false, population:0, selectedAI:false, inChaos:false};
     planetIds.push(planetId);
-    viewport.append('<div class="planet grey" id="'+planetId+'" align="center"><div class="pie-wrapper"><div class="pie pie-spinner"></div><div class="pie pie-filler"></div><div class="pie-mask"></div></div></div>');
+    viewport.append('<div class="planet grey" id="'+planetId+'" align="center"><div class="population-wrapper"></div><div class="pie-wrapper"><div class="pie pie-spinner"></div><div class="pie pie-filler"></div><div class="pie-mask"></div></div></div>');
     currentId++;
   }
 
@@ -478,7 +478,7 @@ function updatePopulations() {
   for(var i = 0; i < planetIds.length; i++) {
     planet = planets[planetIds[i]];
     if(planet.population > 1) {
-        // TODO: if we're using the new planet filling, we might want to set this ^^^ to 2.
+        // TODO: if we're using the new planet filling, we might want to set this ^^^ to 2. (we do need to stop natural growth at pop less than 2...)
         planet.population = getNaturalGrowth(planetIds[i]);
         //check for chaos
         if(planet.population === 1000) {
@@ -537,16 +537,16 @@ function writePlanetPopulations() {
 
     // to make red planets' pops visible, remove this comparison from the loop
     // planet.color === "blue"
-    if(planetPop > 0) {                                                         //DEBUG
-      if(inDebug) {
-        $("#"+planetId).html(planetPop); //in debug mode, this happens for all planets
+    if(planetPop > 1) { //TODO: changed from 0 to 1
+      if(inDebug) {                                                             //DEBUG
+        $("#"+planetId).find('.population-wrapper').html(planetPop); //in debug mode, this happens for all planets
       }else {
         if(planet.color === "blue") {
-          $("#"+planetId).html(planetPop);
+          $("#"+planetId).find('.population-wrapper').html(planetPop);
         }
       }
     }else if(planetPop === 0 || planet.color === "red") {
-      $("#"+planetId).html("");
+      $("#"+planetId).find('.population-wrapper').html("");
     }
   }
 }
@@ -761,6 +761,28 @@ function deleteConnectionsToChaoticPlanets() {
   }
 }
 
+function updatePiePlanets() {
+  for(var i = 0; i < planetIds.length; i++) {
+    var planetId = planetIds[i];
+
+    if(!($("#"+planetId).hasClass("grey"))) {
+      if(planets[planetId].population < 2) {
+        //low pop... grey planet out and update pie.
+
+        $("#"+planetId).removeClass(planets[planetId].color);
+        $("#"+planetId).addClass("grey");
+
+        //TODO: finish this function
+      }
+    }else {
+      if(planets[planetId].population >= 2) {
+        $("#"+planetId).removeClass("grey");
+        $("#"+planetId).addClass(planets[planetId].color);
+      }
+    }
+  }
+}
+
 function checkWinState() {
   var foundBlue = 0;
   var foundRed = 0;
@@ -793,6 +815,7 @@ var mainLoop = setInterval(function() {
     var whoWon = 0;
 
     updatePopulations();
+    updatePiePlanets();
     wipeZeroedPlanets();
     if(!inDebug) {
       updateAIConnectionsVisibility();                                         //DEBUG
