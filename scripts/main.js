@@ -12,6 +12,7 @@ var selectedPlanet;
 var bluePlanets = [];
 var redPlanets = [];
 var starterPlanetSelected = 0;
+var inDebug = true;
 
 function setupLevel() {
   var cellWidth = levelWidth/10;
@@ -289,13 +290,17 @@ function planetClicked(planetEl, isAI) {
   }else if(selectedPlanetsAI.length === 0 && isAI) { //start AI
     if(planet.color === userColor) {
       planet.selectedAI = !planet.selectedAI;
-      // planetEl.toggleClass('selected');                                         //DEBUG
+      if(inDebug) {
+        planetEl.toggleClass('selected');                                         //DEBUG
+      }
       selectedPlanetsAI.push(planetId);
     }
   }else if(selectedPlanetsAI.length === 1 && isAI) {
     if(selectedPlanetsAI[0] === planetId){
       planet.selectedAI = !planet.selectedAI;
-      // planetEl.toggleClass('selected');                                         //DEBUG
+      if(inDebug) {
+        planetEl.toggleClass('selected');                                         //DEBUG
+      }
       selectedPlanetsAI = [];
     }else {
       //make connection between the two planets
@@ -303,36 +308,38 @@ function planetClicked(planetEl, isAI) {
       connectionId = selectedPlanetsAI[0] + planetId;
       //deselect planets
       planets[selectedPlanetsAI[0]].selectedAI = !planets[selectedPlanetsAI[0]].selectedAI;
-      // $('#'+selectedPlanetsAI[0]).toggleClass('selected');                      //DEBUG
+      if(inDebug) {
+        $('#'+selectedPlanetsAI[0]).toggleClass('selected');                      //DEBUG
+      }
       planet.selectedAI = !planet.selectedAI;
       //draw connection
       giverColor = planets[selectedPlanetsAI[0]].color;
 
-      /*                                                                      //DEBUG START
-      planetDistance = getPlanetDistance(selectedPlanetsAI[0], planetId);       //DEBUG
-      viewport.append('<div class="connection '+giverColor+' left" id="'+connectionId+'One"></div>'); //DEBUG
-      viewport.append('<div class="connection '+giverColor+' right" id="'+connectionId+'Two"></div>'); //DEBUG
-      connectionElOne = $("#"+connectionId+"One");                              //DEBUG
-      connectionElTwo = $("#"+connectionId+"Two");                              //DEBUG
-      connectionElOne.css("width", planetDistance);                             //DEBUG
-      connectionElTwo.css("width", planetDistance);                             //DEBUG
+      if(inDebug) {                                                               //DEBUG START
+        planetDistance = getPlanetDistance(selectedPlanetsAI[0], planetId);       //DEBUG
+        viewport.append('<div class="connection '+giverColor+' left" id="'+connectionId+'One"></div>'); //DEBUG
+        viewport.append('<div class="connection '+giverColor+' right" id="'+connectionId+'Two"></div>'); //DEBUG
+        connectionElOne = $("#"+connectionId+"One");                              //DEBUG
+        connectionElTwo = $("#"+connectionId+"Two");                              //DEBUG
+        connectionElOne.css("width", planetDistance);                             //DEBUG
+        connectionElTwo.css("width", planetDistance);                             //DEBUG
 
-      planetOnex = planets[selectedPlanetsAI[0]].x;                             //DEBUG
-      planetOney = planets[selectedPlanetsAI[0]].y;                             //DEBUG
-      planetTwox = planets[planetId].x;                                         //DEBUG
-      planetTwoy = planets[planetId].y;                                         //DEBUG
-      deltaY = planetTwoy - planetOney;                                         //DEBUG
-      deltaX = planetTwox - planetOnex;                                         //DEBUG
-      angle = Math.atan2(deltaY, deltaX);                                       //DEBUG
+        planetOnex = planets[selectedPlanetsAI[0]].x;                             //DEBUG
+        planetOney = planets[selectedPlanetsAI[0]].y;                             //DEBUG
+        planetTwox = planets[planetId].x;                                         //DEBUG
+        planetTwoy = planets[planetId].y;                                         //DEBUG
+        deltaY = planetTwoy - planetOney;                                         //DEBUG
+        deltaX = planetTwox - planetOnex;                                         //DEBUG
+        angle = Math.atan2(deltaY, deltaX);                                       //DEBUG
 
-      connectionElOne.css('left', planetOnex);                                  //DEBUG
-      connectionElOne.css('top', planetOney - 5);                               //DEBUG
-      connectionElTwo.css('left', planetOnex);                                  //DEBUG
-      connectionElTwo.css('top', planetOney);                                   //DEBUG
+        connectionElOne.css('left', planetOnex);                                  //DEBUG
+        connectionElOne.css('top', planetOney - 5);                               //DEBUG
+        connectionElTwo.css('left', planetOnex);                                  //DEBUG
+        connectionElTwo.css('top', planetOney);                                   //DEBUG
 
-      connectionElOne.css("transform", "rotate("+angle+"rad)");                 //DEBUG
-      connectionElTwo.css("transform", "rotate("+angle+"rad)");                 //DEBUG
-      */                                                                      //DEBUG END
+        connectionElOne.css("transform", "rotate("+angle+"rad)");                 //DEBUG
+        connectionElTwo.css("transform", "rotate("+angle+"rad)");                 //DEBUG
+      }                                                                           //DEBUG END
 
       connectionIds.push(connectionId);
 
@@ -438,6 +445,8 @@ function updatePopulations() {
         $("#"+receiver.id).addClass(oldGiverColor);
         receiver.color = oldGiverColor;
 
+        // TODO: This might be a good place to put the "update planet filling" animation, based on the population of the planet.
+
         //check if, by mistake, this planet has active connections.
         for(var i = 0; i < connectedPlanets.length; i++) {
           if(connectedPlanets[i].from === receiver.id) {
@@ -468,6 +477,7 @@ function updatePopulations() {
   for(var i = 0; i < planetIds.length; i++) {
     planet = planets[planetIds[i]];
     if(planet.population > 1) {
+        // TODO: if we're using the new planet filling, we might want to set this ^^^ to 2.
         planet.population = getNaturalGrowth(planetIds[i]);
         //check for chaos
         if(planet.population === 1000) {
@@ -508,6 +518,7 @@ function updatePlanetScales() {
     planet = planets[planetIds[i]];
     planetPop = planet.population;
     if(planetPop > 1) {
+      // TODO: change this function VVV so that the planet grows faster on smaller pops and that the max size is much bigger than the current.
       var planetScale = (0.0011)*(planet.population-100) + 1;
     }else {
       var planetScale = 1;
@@ -525,8 +536,14 @@ function writePlanetPopulations() {
 
     // to make red planets' pops visible, remove this comparison from the loop
     // planet.color === "blue"
-    if(planetPop > 0 && planet.color === "blue") {                                //DEBUG
-      $("#"+planetId).html(planetPop);
+    if(planetPop > 0) {                                                         //DEBUG
+      if(inDebug) {
+        $("#"+planetId).html(planetPop); //in debug mode, this happens for all planets
+      }else {
+        if(planet.color === "blue") {
+          $("#"+planetId).html(planetPop);
+        }
+      }
     }else if(planetPop === 0 || planet.color === "red") {
       $("#"+planetId).html("");
     }
@@ -776,7 +793,9 @@ var mainLoop = setInterval(function() {
 
     updatePopulations();
     wipeZeroedPlanets();
-    updateAIConnectionsVisibility();                                         //DEBUG
+    if(!inDebug) {
+      updateAIConnectionsVisibility();                                         //DEBUG
+    }
     deleteConnectionsToChaoticPlanets();
     updatePlanetScales();
     writePlanetPopulations();

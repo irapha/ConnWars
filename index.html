@@ -27,7 +27,7 @@
         z-index: 2;
       }
       #blackmenu {
-        width: 300px;
+        width: 450px;
         background-color: rgba(0, 0, 0, 0.5);
       }
       #welcome {
@@ -182,16 +182,27 @@
         color: white;
         padding: 4px;
         border: 2px solid white;
+        cursor: pointer;
+      }
+      #feedback-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: white;
+        padding: 4px;
+        border: 2px solid white;
+        cursor: pointer;
       }
     </style>
   </head>
 
   <body>
     <div id='mute-button'>Mute</div>
+    <a href="raphaelgontijolopes@gmail.com"><div id='feedback-button'>Feedback</div></a>
     <div id='startmenu' align="center">
       <div id="blackmenu">
-        <div id='welcome' align="center">Welcome to ConnWars</div>
-        <div id='settlemsg' align="center">Click on a planet to settle.<br />Select two planets to connect them.</div>
+        <div id='welcome' align="center">ConnWars</div>
+        <div id='settlemsg' align="center">Click on a planet to settle.<br />Click on two planets in a row to connect them.<br/>Connect to enemy planets to eliminate their population.</div>
       </div>
     </div>
     <div id='endmenu' align="center">
