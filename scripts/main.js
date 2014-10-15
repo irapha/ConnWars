@@ -52,6 +52,7 @@ function setupLevel() {
                         selected:false, population:0, selectedAI:false, inChaos:false};
     planetIds.push(planetId);
     viewport.append('<div class="planet grey" id="'+planetId+'" align="center"><div class="pie-wrapper"><div class="pie pie-spinner"></div><div class="pie pie-filler"></div><div class="pie-mask"></div></div></div>');
+    // TODO: the insides of the planet div will have to be added AT THE TIME OF THE START OF THE ANIMATION. I know this sucks, but it is necessary because otherwise innerHTML would be overwritten everytime we write the population inside the planet... Unless........ WHen we write the population we can write directly to the child text node right? would that prevernt the rest of the inner HTML form being overwritten?
     currentId++;
 
     planetId = 'planet' + currentId;
