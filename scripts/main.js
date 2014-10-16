@@ -391,7 +391,12 @@ function updatePopulations() {
     var oldGiverColor = giver.color;
 
     //if new population is zero, change color to grey
-    if(newPops_zero <= 0) {
+    if(newPops_zero <= 0) { //TODO: this if was added.
+      $("#"+giver.id).removeClass(giver.color);
+      $("#"+giver.id).addClass("grey");
+    }
+
+    if(newPops[0] <= 0) { //TODO: changed newPops_zero to newPops[0]
       newPops[0] = 0;
       $("#"+giver.id).removeClass(giver.color);
       $("#"+giver.id).addClass("grey");
@@ -477,8 +482,7 @@ function updatePopulations() {
 
   for(var i = 0; i < planetIds.length; i++) {
     planet = planets[planetIds[i]];
-    if(planet.population > 1) {
-        // TODO: if we're using the new planet filling, we might want to set this ^^^ to 2. (we do need to stop natural growth at pop less than 2...)
+    if(planet.population > 2) {  //TODO: changed from 1 to 2.
         planet.population = getNaturalGrowth(planetIds[i]);
         //check for chaos
         if(planet.population === 1000) {
@@ -518,7 +522,7 @@ function updatePlanetScales() {
   for(var i = 0; i < planetIds.length; i++) {
     planet = planets[planetIds[i]];
     planetPop = planet.population;
-    if(planetPop > 1) {
+    if(planetPop > 0) { //TODO: changed this from 1 to 0
       // TODO: change this function VVV so that the planet grows faster on smaller pops and that the max size is much bigger than the current.
       var planetScale = (0.0011)*(planet.population-100) + 1;
     }else {
@@ -545,7 +549,7 @@ function writePlanetPopulations() {
           $("#"+planetId).find('.population-wrapper').html(planetPop);
         }
       }
-    }else if(planetPop === 0 || planet.color === "red") {
+    }else if(planetPop === 0 || planetPop === 1 || planet.color === "red") {
       $("#"+planetId).find('.population-wrapper').html("");
     }
   }
