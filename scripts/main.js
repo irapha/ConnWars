@@ -773,12 +773,36 @@ function updatePiePlanets() {
         $("#"+planetId).addClass("grey");
 
         //TODO: finish this function
+
       }
     }else {
       if(planets[planetId].population >= 2) {
         $("#"+planetId).removeClass("grey");
         $("#"+planetId).addClass(planets[planetId].color);
       }
+    }
+
+    if(planets[planetId].population < 2 && planets[planetId].population != 0) {
+      //setting divs visibility
+      $("#"+planetId).find(".pie-spinner").css("opacity", "1");
+      if(planets[planetId].population <= 1) {
+          $("#"+planetId).find(".pie-filler").css("opacity", "0");
+          $("#"+planetId).find(".pie-mask").css("opacity", "1");
+      }else {
+          $("#"+planetId).find(".pie-filler").css("opacity", "1");
+          $("#"+planetId).find(".pie-mask").css("opacity", "0");
+      }
+
+      //find spinner angle
+      var spinnerAngle = (planets[planetId].population / 2) * 360;
+
+      //rotate spinner
+      $("#"+planetId).find(".pie-spinner").css("transform", "rotate("+spinnerAngle+"deg)");
+    }else {
+      //make the inner divs invisible
+      $("#"+planetId).find(".pie-spinner").css("opacity", "0");
+      $("#"+planetId).find(".pie-filler").css("opacity", "0");
+      $("#"+planetId).find(".pie-mask").css("opacity", "0");
     }
   }
 }

@@ -208,19 +208,8 @@
         border: 2px solid white;
         cursor: pointer;
       }
+
       @keyframes pierotate {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-      @-webkit-keyframes pierotate {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-      @-o-keyframes pierotate {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-      @-moz-keyframes pierotate {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
       }
@@ -228,34 +217,11 @@
         0% { opacity: 0; }
         50%, 100% { opacity: 1; }
       }
-      @-webkit-keyframes piefill {
-        0% { opacity: 0; }
-        50%, 100% { opacity: 1; }
-      }
-      @-o-keyframes piefill {
-        0% { opacity: 0; }
-        50%, 100% { opacity: 1; }
-      }
-      @-moz-keyframes piefill {
-        0% { opacity: 0; }
-        50%, 100% { opacity: 1; }
-      }
       @keyframes piemask {
         0% { opacity: 1; }
         50%, 100% { opacity: 0; }
       }
-      @-webkit-keyframes piemask {
-        0% { opacity: 1; }
-        50%, 100% { opacity: 0; }
-      }
-      @-o-keyframes piemask {
-        0% { opacity: 1; }
-        50%, 100% { opacity: 0; }
-      }
-      @-moz-keyframes piemask {
-        0% { opacity: 1; }
-        50%, 100% { opacity: 0; }
-      }
+
       .pie-wrapper {
         width: 100%;
         height: 100%;
@@ -273,23 +239,15 @@
         border-radius: 15px 0 0 15px;
         z-index: 5;
         border-right: none;
+        opacity: 0;
 
         transform-origin: 100% 50%;
         -webkit-transform-origin: 100% 50%;
-
-        -webkit-animation: pierotate 5s linear infinite;
-        -moz-animation: pierotate 5s linear infinite;
-        -o-animation: pierotate 5s linear infinite;
-        animation: pierotate 5s linear infinite;
       }
       .pie-filler {
         border-radius: 0 15px 15px 0;
         z-index: 4;
         border-left: none;
-        -webkit-animation: piefill 5s steps(1, end) infinite;
-        -moz-animation: piefill 5s steps(1, end) infinite;
-        -o-animation: piefill 5s steps(1, end) infinite;
-        animation: piefill 5s steps(1, end) infinite;
         left: 50%;
         opacity: 0;
       }
@@ -298,14 +256,10 @@
         height: 100%;
         position: absolute;
         z-index: 6;
-        opacity: 1;
+        opacity: 0;
         border-radius: 15px 0 0 15px;
         border-left: none;
         background: inherit;
-        -webkit-animation: piemask 5s steps(1, end) infinite;
-        -moz-animation: piemask 5s steps(1, end) infinite;
-        -o-animation: piemask 5s steps(1, end) infinite;
-        animation: piemask 5s steps(1, end) infinite;
       }
     </style>
   </head>
