@@ -12,7 +12,7 @@ var selectedPlanet;
 var bluePlanets = [];
 var redPlanets = [];
 var starterPlanetSelected = 0;
-var inDebug = true;
+var inDebug = false;
 
 function setupLevel() {
   var cellWidth = levelWidth/10;
