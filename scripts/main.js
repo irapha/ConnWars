@@ -428,7 +428,6 @@ function updatePopulations() {
       }
       $("#"+receiver.id).removeClass(receiver.color);
       $("#"+receiver.id).addClass(newColor);
-      console.log("planet turned "+newColor);
       receiver.color = newColor;
       //delete all connections from receiver.
       for(var i = 0; i < connectedPlanets.length; i++) {
