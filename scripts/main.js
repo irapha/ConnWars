@@ -51,7 +51,7 @@ function setupLevel() {
     planets[planetId] = {color:'grey', x:cellCoords.x, y:cellCoords.y, id:planetId,
                         selected:false, population:0, selectedAI:false, inChaos:false};
     planetIds.push(planetId);
-    viewport.append('<div class="planet grey" id="'+planetId+'" align="center"><div class="population-wrapper"></div><div class="pie-wrapper"><div class="pie pie-spinner"></div><div class="pie pie-filler"></div><div class="pie-mask"></div></div></div>');
+    viewport.append('<div class="planet grey" id="'+planetId+'" align="center"><div class="population-wrapper"></div><div class="pie-wrapper"><div class="pie pie-spinner-blue"></div><div class="pie pie-filler-blue"></div><div class="pie-mask-blue"></div><div class="pie pie-spinner-red"></div><div class="pie pie-filler-red"></div><div class="pie-mask-red"></div></div></div>');
     // TODO: the insides of the planet div will have to be added AT THE TIME OF THE START OF THE ANIMATION. I know this sucks, but it is necessary because otherwise innerHTML would be overwritten everytime we write the population inside the planet... Unless........ WHen we write the population we can write directly to the child text node right? would that prevernt the rest of the inner HTML form being overwritten?
     currentId++;
 
@@ -59,7 +59,7 @@ function setupLevel() {
     planets[planetId] = {color:'grey', x:invertedCoords.x, y:invertedCoords.y, id:planetId,
                         selected:false, population:0, selectedAI:false, inChaos:false};
     planetIds.push(planetId);
-    viewport.append('<div class="planet grey" id="'+planetId+'" align="center"><div class="population-wrapper"></div><div class="pie-wrapper"><div class="pie pie-spinner"></div><div class="pie pie-filler"></div><div class="pie-mask"></div></div></div>');
+    viewport.append('<div class="planet grey" id="'+planetId+'" align="center"><div class="population-wrapper"></div><div class="pie-wrapper"><div class="pie pie-spinner-blue"></div><div class="pie pie-filler-blue"></div><div class="pie-mask-blue"></div><div class="pie pie-spinner-red"></div><div class="pie pie-filler-red"></div><div class="pie-mask-red"></div></div></div>');
     currentId++;
   }
 
@@ -419,7 +419,7 @@ function updatePopulations() {
     }
     giver.population = newPops[0];
     //if new population is negative, change color to oposite
-    if(newPops_one < 0) {
+    if(newPops[1] < 0) { //TODO: changed from newPops_one to newPops[1]
       newPops[1] = (-1)*newPops[1];
       if(receiver.color === "red") {
         var newColor = "blue";
@@ -428,6 +428,7 @@ function updatePopulations() {
       }
       $("#"+receiver.id).removeClass(receiver.color);
       $("#"+receiver.id).addClass(newColor);
+      console.log("planet turned "+newColor);
       receiver.color = newColor;
       //delete all connections from receiver.
       for(var i = 0; i < connectedPlanets.length; i++) {
@@ -445,8 +446,8 @@ function updatePopulations() {
         }
       }
     }
-    if(receiver.population < 1) {
-      if(receiver.color === "grey" && oldGiverColor === giver.color) {
+    if(receiver.population === 0) { //TODO: changed from < 1 to <= 0 TODO TODO TODO VERIFY THESE TWO CHANGES... THEY MIGHT NOT MAKE SENSE...
+      if(oldGiverColor === giver.color) { //TODO: changed from receiver.color === "grey" && oldGiverColor === giver.color to oldGiverColor === giver.color
         $("#"+receiver.id).removeClass(receiver.color);
         $("#"+receiver.id).addClass(oldGiverColor);
         receiver.color = oldGiverColor;
@@ -769,15 +770,30 @@ function updatePiePlanets() {
   for(var i = 0; i < planetIds.length; i++) {
     var planetId = planetIds[i];
 
+    //determining which css to add.
+    if(planets[planetId].color === "blue") {
+      var thisSpinner = ".pie-spinner-blue";
+      var thisFiller = ".pie-filler-blue";
+      var thisMask = ".pie-mask-blue";
+
+      var otherSpinner = ".pie-spinner-red";
+      var otherFiller = ".pie-filler-red";
+      var otherMask = ".pie-mask-red";
+    } else if(planets[planetId].color === "red") {
+      var thisSpinner = ".pie-spinner-red";
+      var thisFiller = ".pie-filler-red";
+      var thisMask = ".pie-mask-red";
+
+      var otherSpinner = ".pie-spinner-blue";
+      var otherFiller = ".pie-filler-blue";
+      var otherMask = ".pie-mask-blue";
+    }
+
     if(!($("#"+planetId).hasClass("grey"))) {
       if(planets[planetId].population < 2) {
         //low pop... grey planet out and update pie.
-
         $("#"+planetId).removeClass(planets[planetId].color);
         $("#"+planetId).addClass("grey");
-
-        //TODO: finish this function
-
       }
     }else {
       if(planets[planetId].population >= 2) {
@@ -788,25 +804,37 @@ function updatePiePlanets() {
 
     if(planets[planetId].population < 2 && planets[planetId].population != 0) {
       //setting divs visibility
-      $("#"+planetId).find(".pie-spinner").css("opacity", "1");
+      $("#"+planetId).find(thisSpinner).css("opacity", "1");
       if(planets[planetId].population <= 1) {
-          $("#"+planetId).find(".pie-filler").css("opacity", "0");
-          $("#"+planetId).find(".pie-mask").css("opacity", "1");
+          $("#"+planetId).find(thisFiller).css("opacity", "0");
+          $("#"+planetId).find(thisMask).css("opacity", "1");
       }else {
-          $("#"+planetId).find(".pie-filler").css("opacity", "1");
-          $("#"+planetId).find(".pie-mask").css("opacity", "0");
+          $("#"+planetId).find(thisFiller).css("opacity", "1");
+          $("#"+planetId).find(thisMask).css("opacity", "0");
       }
 
+      $("#"+planetId).find(otherSpinner).css("opacity", "0");
+      $("#"+planetId).find(otherFiller).css("opacity", "0");
+      $("#"+planetId).find(otherMask).css("opacity", "0");
+
       //find spinner angle
-      var spinnerAngle = (planets[planetId].population / 2) * 360;
+      if(planets[planetId].color === "blue") {
+        var spinnerAngle = (planets[planetId].population / 2) * 360;
+      } else {
+        var spinnerAngle = 360 - ((planets[planetId].population / 2) * 360);
+      }
 
       //rotate spinner
-      $("#"+planetId).find(".pie-spinner").css("transform", "rotate("+spinnerAngle+"deg)");
+      $("#"+planetId).find(thisSpinner).css("transform", "rotate("+spinnerAngle+"deg)");
     }else {
       //make the inner divs invisible
-      $("#"+planetId).find(".pie-spinner").css("opacity", "0");
-      $("#"+planetId).find(".pie-filler").css("opacity", "0");
-      $("#"+planetId).find(".pie-mask").css("opacity", "0");
+      $("#"+planetId).find(thisSpinner).css("opacity", "0");
+      $("#"+planetId).find(thisFiller).css("opacity", "0");
+      $("#"+planetId).find(thisMask).css("opacity", "0");
+
+      $("#"+planetId).find(otherSpinner).css("opacity", "0");
+      $("#"+planetId).find(otherFiller).css("opacity", "0");
+      $("#"+planetId).find(otherMask).css("opacity", "0");
     }
   }
 }
@@ -844,7 +872,7 @@ var mainLoop = setInterval(function() {
 
     updatePopulations();
     updatePiePlanets();
-    wipeZeroedPlanets();
+    // wipeZeroedPlanets(); //TODO: commented this out... Why is this necessary?
     if(!inDebug) {
       updateAIConnectionsVisibility();                                         //DEBUG
     }

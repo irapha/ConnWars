@@ -233,25 +233,26 @@
         width: 50%;
         height: 100%;
         position: absolute;
-        background: blue;
       }
-      .pie-spinner {
+      .pie-spinner-blue {
         border-radius: 15px 0 0 15px;
         z-index: 5;
         border-right: none;
+        background: blue;
         opacity: 0;
 
         transform-origin: 100% 50%;
         -webkit-transform-origin: 100% 50%;
       }
-      .pie-filler {
+      .pie-filler-blue {
         border-radius: 0 15px 15px 0;
         z-index: 4;
         border-left: none;
         left: 50%;
+        background: blue;
         opacity: 0;
       }
-      .pie-mask {
+      .pie-mask-blue {
         width: 50%;
         height: 100%;
         position: absolute;
@@ -259,6 +260,36 @@
         opacity: 0;
         border-radius: 15px 0 0 15px;
         border-left: none;
+        background: inherit;
+      }
+
+      .pie-spinner-red {
+        border-radius: 0 15px 15px 0;
+        z-index: 5;
+        border-left: none;
+        background: red;
+        opacity: 0;
+        left: 50%;
+
+        transform-origin: 0% 50%;
+        -webkit-transform-origin: 0% 50%;
+      }
+      .pie-filler-red {
+        border-radius: 15px 0 0 15px;
+        z-index: 4;
+        border-right: none;
+        background: red;
+        opacity: 0;
+      }
+      .pie-mask-red {
+        width: 50%;
+        height: 100%;
+        position: absolute;
+        z-index: 6;
+        opacity: 0;
+        left: 50%;
+        border-radius: 0 15px 15px 0;
+        border-right: none;
         background: inherit;
       }
     </style>
