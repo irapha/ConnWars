@@ -523,9 +523,8 @@ function updatePlanetScales() {
     planet = planets[planetIds[i]];
     planetPop = planet.population;
     if(planetPop > 0) { //TODO: changed this from 1 to 0
-      // TODO: change this function VVV so that the planet grows faster on smaller pops and that the max size is much bigger than the current.
       // var planetScale = (0.0011)*(planet.population-100) + 1; //TODO commented this out
-      var planetScale = (Math.pow(planet.population, 1/3)/5) + 1; //TODO added this line
+      var planetScale = (Math.pow(planet.population, 1/2)/15.8) + 1; //TODO added this line
     }else {
       var planetScale = 1;
     }
