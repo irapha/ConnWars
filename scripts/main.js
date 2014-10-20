@@ -893,6 +893,7 @@ var startGame = function() {
         }
 
         $(".planet").unbind();
+        $("#pause-button").unbind();
         $("#endmenu").show();
         $("#whowon").html(whoWon+" won!");
         delete whoWon;
@@ -915,14 +916,16 @@ startGame();
 $("#pause-button").click(function() {
   if(!isPaused) {
     isPaused = true;
-    $("#pause-button").html("&nbsp;>&nbsp;");
+    $("#pause-button").html(">");
     clearInterval(mainLoop);
     clearInterval(aiChecks);
+    $("#endmenu").show();
     $("#whowon").html("PAUSED");
   } else {
     isPaused = false;
     $("#pause-button").html("|&nbsp;|");
     startGame();
+    $("#endmenu").hide();
     $("#whowon").html("");
   }
 });
