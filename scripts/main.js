@@ -98,6 +98,10 @@ function setupLevel() {
     });
   }
 
+  setClickEvents();
+}
+
+function setClickEvents() {
   $(".planet").click(function(event) {
     event.stopPropagation();
     planetClicked($(this), false);
@@ -118,6 +122,11 @@ function setupLevel() {
   });
 
   $("#endmenu").hide();
+}
+
+function clearClickEvents() {
+  $(".planet").unbind();
+  $("body").unbind();
 }
 
 function initialDraw() {
@@ -919,12 +928,14 @@ $("#pause-button").click(function() {
     $("#pause-button").html(">");
     clearInterval(mainLoop);
     clearInterval(aiChecks);
+    clearClickEvents();
     $("#endmenu").show();
     $("#whowon").html("PAUSED");
   } else {
     isPaused = false;
     $("#pause-button").html("|&nbsp;|");
     startGame();
+    setClickEvents();
     $("#endmenu").hide();
     $("#whowon").html("");
   }
