@@ -941,6 +941,6 @@ $('#mute-button').click(function() {
   else {
     music.pause();
     playing = false;
-    $('#mute-button').html('Unmute');
+    $('#mute-button').html('UnMute');
   }
 });
