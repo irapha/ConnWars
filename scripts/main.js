@@ -12,6 +12,7 @@ var selectedPlanet;
 var bluePlanets = [];
 var redPlanets = [];
 var starterPlanetSelected = 0;
+var isPaused = false;
 var inDebug = false;
 
 function setupLevel() {
@@ -865,44 +866,66 @@ setupLevel();
 initialDraw();
 requestStarterPlanet();
 
-var mainLoop = setInterval(function() {
-  if(starterPlanetSelected === 1){
-    var whoWon = 0;
+var mainLoop;
+var aiChecks;
 
-    updatePopulations();
-    updatePiePlanets();
-    // wipeZeroedPlanets(); //TODO: commented this out... Why is this necessary?
-    if(!inDebug) {
-      updateAIConnectionsVisibility();                                         //DEBUG
-    }
-    deleteConnectionsToChaoticPlanets();
-    updatePlanetScales();
-    writePlanetPopulations();
-    whoWon = checkWinState();
-    if(whoWon === 1 || whoWon === 2){
+var startGame = function() {
+  mainLoop = setInterval(function() {
+    if(starterPlanetSelected === 1){
+      var whoWon = 0;
 
-      if(whoWon === 1) {
-        whoWon = "You";
-      }else {
-        whoWon = "A.I.";
+      updatePopulations();
+      updatePiePlanets();
+      // wipeZeroedPlanets(); //TODO: commented this out... Why is this necessary?
+      if(!inDebug) {
+        updateAIConnectionsVisibility();                                         //DEBUG
       }
+      deleteConnectionsToChaoticPlanets();
+      updatePlanetScales();
+      writePlanetPopulations();
+      whoWon = checkWinState();
+      if(whoWon === 1 || whoWon === 2){
 
-      $(".planet").unbind();
-      $("#endmenu").show();
-      $("#whowon").html(whoWon+" won!");
-      delete whoWon;
+        if(whoWon === 1) {
+          whoWon = "You";
+        }else {
+          whoWon = "A.I.";
+        }
 
-      clearInterval(mainLoop);
-      clearInterval(aiChecks);
+        $(".planet").unbind();
+        $("#endmenu").show();
+        $("#whowon").html(whoWon+" won!");
+        delete whoWon;
+
+        clearInterval(mainLoop);
+        clearInterval(aiChecks);
+      }
     }
-  }
-}, 33);
+  }, 33);
 
-var aiChecks = setInterval(function() {
-  if(starterPlanetSelected === 1) {
-    ai.updateConnections();
+  aiChecks = setInterval(function() {
+    if(starterPlanetSelected === 1) {
+      ai.updateConnections();
+    }
+  }, 5000);
+}
+
+startGame();
+
+$("#pause-button").click(function() {
+  if(!isPaused) {
+    isPaused = true;
+    $("#pause-button").html("&nbsp;>&nbsp;");
+    clearInterval(mainLoop);
+    clearInterval(aiChecks);
+    $("#whowon").html("PAUSED");
+  } else {
+    isPaused = false;
+    $("#pause-button").html("|&nbsp;|");
+    startGame();
+    $("#whowon").html("");
   }
-}, 5000);
+});
 
 var playing = true;
 $('#mute-button').click(function() {

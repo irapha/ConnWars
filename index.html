@@ -192,14 +192,20 @@
         border: 2px dashed white;
         z-index:8;
       }
-      #mute-button {
-        position: absolute;
-        top: 10px;
-        left: 10px;
+      #pause-button {
+        float:left;
         color: white;
         padding: 4px;
         border: 2px solid white;
         cursor: pointer;
+      }
+      #mute-button {
+        float:left;
+        color: white;
+        padding: 4px;
+        border: 2px solid white;
+        cursor: pointer;
+        margin-left: 10px;
       }
       #feedback-button {
         position: absolute;
@@ -298,6 +304,7 @@
   </head>
 
   <body>
+    <div id='pause-button'>| |</div>
     <div id='mute-button'>Mute</div>
     <a href="raphaelgontijolopes@gmail.com"><div id='feedback-button'>Feedback</div></a>
     <div id='startmenu' align="center">
