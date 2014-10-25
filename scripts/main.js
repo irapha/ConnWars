@@ -53,7 +53,6 @@ function setupLevel() {
                         selected:false, population:0, selectedAI:false, inChaos:false};
     planetIds.push(planetId);
     viewport.append('<div class="planet grey" id="'+planetId+'" align="center"><div class="population-wrapper"></div><div class="pie-wrapper"><div class="pie pie-spinner-blue"></div><div class="pie pie-filler-blue"></div><div class="pie-mask-blue"></div><div class="pie pie-spinner-red"></div><div class="pie pie-filler-red"></div><div class="pie-mask-red"></div></div></div>');
-    // TODO: the insides of the planet div will have to be added AT THE TIME OF THE START OF THE ANIMATION. I know this sucks, but it is necessary because otherwise innerHTML would be overwritten everytime we write the population inside the planet... Unless........ WHen we write the population we can write directly to the child text node right? would that prevernt the rest of the inner HTML form being overwritten?
     currentId++;
 
     planetId = 'planet' + currentId;
@@ -401,12 +400,12 @@ function updatePopulations() {
     var oldGiverColor = giver.color;
 
     //if new population is zero, change color to grey
-    if(newPops_zero <= 0) { //TODO: this if was added.
+    if(newPops_zero <= 0) {
       $("#"+giver.id).removeClass(giver.color);
       $("#"+giver.id).addClass("grey");
     }
 
-    if(newPops[0] <= 0) { //TODO: changed newPops_zero to newPops[0]
+    if(newPops[0] <= 0) {
       newPops[0] = 0;
       $("#"+giver.id).removeClass(giver.color);
       $("#"+giver.id).addClass("grey");
@@ -429,7 +428,7 @@ function updatePopulations() {
     }
     giver.population = newPops[0];
     //if new population is negative, change color to oposite
-    if(newPops[1] < 0) { //TODO: changed from newPops_one to newPops[1]
+    if(newPops[1] < 0) {
       newPops[1] = (-1)*newPops[1];
       if(receiver.color === "red") {
         var newColor = "blue";
@@ -455,13 +454,11 @@ function updatePopulations() {
         }
       }
     }
-    if(receiver.population === 0) { //TODO: changed from < 1 to <= 0 TODO TODO TODO VERIFY THESE TWO CHANGES... THEY MIGHT NOT MAKE SENSE...
-      if(oldGiverColor === giver.color) { //TODO: changed from receiver.color === "grey" && oldGiverColor === giver.color to oldGiverColor === giver.color
+    if(receiver.population === 0) {
+      if(oldGiverColor === giver.color) {
         $("#"+receiver.id).removeClass(receiver.color);
         $("#"+receiver.id).addClass(oldGiverColor);
         receiver.color = oldGiverColor;
-
-        // TODO: This might be a good place to put the "update planet filling" animation, based on the population of the planet.
 
         //check if, by mistake, this planet has active connections.
         for(var i = 0; i < connectedPlanets.length; i++) {
@@ -492,7 +489,7 @@ function updatePopulations() {
 
   for(var i = 0; i < planetIds.length; i++) {
     planet = planets[planetIds[i]];
-    if(planet.population > 2) {  //TODO: changed from 1 to 2.
+    if(planet.population > 2) {
         planet.population = getNaturalGrowth(planetIds[i]);
         //check for chaos
         if(planet.population === 1000) {
@@ -532,9 +529,8 @@ function updatePlanetScales() {
   for(var i = 0; i < planetIds.length; i++) {
     planet = planets[planetIds[i]];
     planetPop = planet.population;
-    if(planetPop > 0) { //TODO: changed this from 1 to 0
-      // var planetScale = (0.0011)*(planet.population-100) + 1; //TODO commented this out
-      var planetScale = (Math.pow(planet.population, 1/2)/15.8) + 1; //TODO added this line
+    if(planetPop > 0) {
+      var planetScale = (Math.pow(planet.population, 1/2)/15.8) + 1;
     }else {
       var planetScale = 1;
     }
@@ -551,7 +547,7 @@ function writePlanetPopulations() {
 
     // to make red planets' pops visible, remove this comparison from the loop
     // planet.color === "blue"
-    if(planetPop > 1) { //TODO: changed from 0 to 1
+    if(planetPop > 1) {
       if(inDebug) {                                                             //DEBUG
         $("#"+planetId).find('.population-wrapper').html(planetPop); //in debug mode, this happens for all planets
       }else {
@@ -885,7 +881,7 @@ var startGame = function() {
 
       updatePopulations();
       updatePiePlanets();
-      // wipeZeroedPlanets(); //TODO: commented this out... Why is this necessary?
+      // wipeZeroedPlanets(); //is this necessary? apparently it isn't...
       if(!inDebug) {
         updateAIConnectionsVisibility();                                         //DEBUG
       }
