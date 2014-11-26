@@ -131,7 +131,12 @@ function setViewportListener() {
 function setUpPlanetListeners() {
   console.log("setUpPlanetListeners");
   gameRef.child("planetIds").on("value", function (snapshot) {
-    planetIds = snapshot.val();
+    planetIds = [];
+
+    for (var key in snapshot.val()) {
+      var planet = snapshot.val()[key];
+      planetIds.push(planet);
+    }
   });
 
   gameRef.child("planets").on("child_added", function(snapshot) {
@@ -146,8 +151,6 @@ function setUpPlanetListeners() {
       var value = snapshot.val();
       var key = snapshot.name();
 
-      planets[planetModifiedId][key] = value;
-
       if(!isPlayerOne) {
         if (value === "red") {
           value = "blue";
@@ -156,11 +159,21 @@ function setUpPlanetListeners() {
         }
       }
 
-      if (key === "color") {
+      planets[planetModifiedId][key] = value;
+
+      if (key === "classColor") {
         $("#"+planetModifiedId).removeClass("grey");
         $("#"+planetModifiedId).removeClass("blue");
         $("#"+planetModifiedId).removeClass("red");
         $("#"+planetModifiedId).addClass(value);
+      }
+
+      if (key === "inChaosClass") {
+        if(value) {
+          $("#"+planetModifiedId).addClass("chaos");
+        } else {
+          $("#"+planetModifiedId).removeClass("chaos");
+        }
       }
     });
   });
@@ -286,13 +299,13 @@ function setupLevel() {
     var planetId = 'planet' + currentId;
     gameRef.child("planetIds").push(planetId);
     gameRef.child("planets").child(planetId).set({color:'grey', x:cellCoords.x, y:cellCoords.y, id:planetId,
-      selected:false, population:0, selectedAI:false, inChaos:false, tophalf: true});
+      selected:false, population:0, selectedAI:false, inChaos:false, inChaosClass:false, classColor:"grey"});
     currentId++;
 
     planetId = 'planet' + currentId;
     gameRef.child("planetIds").push(planetId);
     gameRef.child("planets").child(planetId).set({color:'grey', x:invertedCoords.x, y:invertedCoords.y, id:planetId,
-      selected:false, population:0, selectedAI:false, inChaos:false, tophalf: false});
+      selected:false, population:0, selectedAI:false, inChaos:false, inChaosClass:false, classColor:"grey"});
     currentId++;
   }
 
@@ -639,6 +652,7 @@ function requestStarterPlanet(){
     gameRef.child("planets/"+planetId+"/population").set(100);
     var starterPlanetColor = (isPlayerOne) ? ("blue") : ("red");
     gameRef.child("planets/"+planetId+"/color").set(starterPlanetColor);
+    gameRef.child("planets/"+planetId+"/classColor").set(starterPlanetColor);
 
     //both starter planets have to be selected for the game to run.
     if (isPlayerOne) {
@@ -688,15 +702,18 @@ function updatePopulations() {
 
     //if new population is zero, change color to grey
     if(newPops_zero <= 0) {
-      $("#"+giver.id).removeClass(giver.color);
-      $("#"+giver.id).addClass("grey");
+      // $("#"+giver.id).removeClass(giver.color);
+      // $("#"+giver.id).addClass("grey");
+      gameRef.child("planets/" + giver.id + "/classColor").set("grey");
     }
 
     if(newPops[0] <= 0) {
       newPops[0] = 0;
-      $("#"+giver.id).removeClass(giver.color);
-      $("#"+giver.id).addClass("grey");
-      giver.color = "grey";
+      // $("#"+giver.id).removeClass(giver.color);
+      // $("#"+giver.id).addClass("grey");
+      gameRef.child("planets/" + giver.id + "/classColor").set("grey");
+      // giver.color = "grey";
+      gameRef.child("planets/" + giver.id + "/color").set("grey");
       //delete connection this planet has with others
       for(var i = 0; i < connectedPlanets.length; i++) {
         if(connectedPlanets[i].from === giver.id) {
@@ -713,7 +730,9 @@ function updatePopulations() {
         }
       }
     }
-    giver.population = newPops[0];
+    // giver.population = newPops[0];
+    gameRef.child("planets/" + giver.id + "/population").set(newPops[0]);
+
     //if new population is negative, change color to oposite
     if(newPops[1] < 0) {
       newPops[1] = (-1)*newPops[1];
@@ -722,9 +741,11 @@ function updatePopulations() {
       }else if(receiver.color === "blue") {
         var newColor = "red";
       }
-      $("#"+receiver.id).removeClass(receiver.color);
-      $("#"+receiver.id).addClass(newColor);
-      receiver.color = newColor;
+      // $("#"+receiver.id).removeClass(receiver.color);
+      // $("#"+receiver.id).addClass(newColor);
+      gameRef.child("planets/" + receiver.id + "/classColor").set(newColor);
+      // receiver.color = newColor;
+      gameRef.child("planets/" + receiver.id + "/color").set(newColor);
       //delete all connections from receiver.
       for(var i = 0; i < connectedPlanets.length; i++) {
         if(connectedPlanets[i].from === receiver.id) {
@@ -743,9 +764,11 @@ function updatePopulations() {
     }
     if(receiver.population === 0) {
       if(oldGiverColor === giver.color) {
-        $("#"+receiver.id).removeClass(receiver.color);
-        $("#"+receiver.id).addClass(oldGiverColor);
-        receiver.color = oldGiverColor;
+        // $("#"+receiver.id).removeClass(receiver.color);
+        // $("#"+receiver.id).addClass(oldGiverColor);
+        gameRef.child("planets/" + receiver.id + "/classColor").set(oldGiverColor);
+        // receiver.color = oldGiverColor;
+        gameRef.child("planets/" + receiver.id + "/color").set(oldGiverColor);
 
         //check if, by mistake, this planet has active connections.
         for(var i = 0; i < connectedPlanets.length; i++) {
@@ -771,17 +794,21 @@ function updatePopulations() {
         }
       }
     }
-    receiver.population = newPops[1];
+    // receiver.population = newPops[1];
+    gameRef.child("planets/" + receiver.id + "/population").set(newPops[1]);
   }
 
   for(var i = 0; i < planetIds.length; i++) {
     planet = planets[planetIds[i]];
     if(planet.population > 2) {
-        planet.population = getNaturalGrowth(planetIds[i]);
+        // planet.population = getNaturalGrowth(planetIds[i]);
+        gameRef.child("planets/" + planet.id + "/population").set(getNaturalGrowth(planetIds[i]));
         //check for chaos
         if(planet.population === 1000) {
-          planet.inChaos = true;
-          $("#"+planet.id).addClass("chaos");
+          // planet.inChaos = true;
+          gameRef.child("planets/" + planet.id + "/inChaos").set(true);
+          // $("#"+planet.id).addClass("chaos");
+          gameRef.child("planets/" + planet.id + "/inChaosClass").set(true);
           //delete all connections TO this planet, coming from planets of the same color
           for(var j = 0; j < connectedPlanets.length; j++) {
             if(connectedPlanets[j].to === planet.id) {
@@ -805,8 +832,10 @@ function updatePopulations() {
             }
           }
         }else if(planet.inChaos === true && planet.population <= 500) {
-          planet.inChaos = false;
-          $("#"+planet.id).removeClass("chaos");
+          // planet.inChaos = false;
+          gameRef.child("planets/" + planet.id + "/inChaos").set(false);
+          // $("#"+planet.id).removeClass("chaos");
+          gameRef.child("planets/" + planet.id + "/inChaosClass").set(false);
         }
     }
   }
@@ -845,20 +874,6 @@ function writePlanetPopulations() {
     }else if(planetPop === 0 || planetPop === 1 || planet.color === "red") {
       $("#"+planetId).find('.population-wrapper').html("");
     }
-  }
-}
-
-function wipeZeroedPlanets() {
-  for(var i = 0; i < planetIds.length; i++){
-      planet = planets[planetIds[i]];
-      planetPop = ~~planet.population;
-      planetId = planet.id;
-
-      if(planetPop === 0){
-          $("#"+planetId).removeClass(planet.color);
-          $("#"+planetId).addClass("grey");
-          planet.color = "grey";
-      }
   }
 }
 
@@ -1181,7 +1196,6 @@ var aiChecks;
 var startGame = function() {
   mainLoop = setInterval(function() {
     if(starterPlanetSelected === 1) {
-      console.log("mainLoop running");
       var whoWon = 0;
 
       if (isPlayerOne) {
