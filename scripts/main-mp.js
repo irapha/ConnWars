@@ -1,16 +1,16 @@
-var planets = {};
-var planetIds = [];
+var planets = {}; //on firebase
+var planetIds = []; //on firebase
 var selectedPlanets = [];
 var selectedPlanetsAI = [];
-var connectedPlanets = [];
-var connectionIds = [];
+var connectedPlanets = []; //on firebase
+var connectionIds = []; //on firebase
 var planetsPerSide = 10;
 var viewport = $('#viewport');
-var levelWidth = viewport.width();
-var levelHeight = viewport.height();
+var levelWidth = viewport.width(); //on firebase
+var levelHeight = viewport.height(); //on firebase
 var selectedPlanet;
-var bluePlanets = [];
-var redPlanets = [];
+var bluePlanets = []; //on firebase
+var redPlanets = []; //on firebase
 var starterPlanetSelected = 0;
 var isPaused = false;
 var inDebug = false;
@@ -82,7 +82,9 @@ function createGame() {
                   "initialHeight": levelHeight,
                   "height": null,
                   "width": null,
-                  "starterPlanetSelected": null
+                  "starterPlanetSelected": null,
+                  "connectionIds": [],
+                  "connectedPlanets": []
               });
 
   console.log("creating game: ");
@@ -178,6 +180,33 @@ function setUpPlanetListeners() {
     });
   });
 
+
+  gameRef.child("connectionIds").on("child_added", function(snapshot) {
+    connectionIds.push(snapshot.val());
+  });
+
+  gameRef.child("connectionIds").on("child_removed", function(snapshot) {
+    for (var i = 0; i < connectionIds.length; i++) {
+      if (connectionIds[i] === snapshot.val()) {
+        connectionIds.splice(i, 1);
+        break;
+      }
+    }
+  });
+
+  gameRef.child("connectedPlanets").on("child_added", function(snapshot) {
+    connectedPlanets.push(snapshot.val());
+  });
+
+  gameRef.child("connectedPlanets").on("child_removed", function(snapshot) {
+    for (var i = 0; i < connectedPlanets.length; i++) {
+      if (connectedPlanets[i] === snapshot.val()) {
+        connectionIds.splice(i, 1);
+        break;
+      }
+    }
+  });
+
   if (isPlayerOne) {
     setupLevel(); // only for playerOne
   } else {
@@ -204,7 +233,7 @@ function waitForPlanets(numberOfTries) {
     }
   }
 
-  requestStarterPlanet();
+  requestStarterPlanet();  //TODO: BUG somehow this got called before the number of planets was drawn. Maybe we should be checking for planet drawn, not for array length....
 }
 
 function waitForPlayer2() {
@@ -430,28 +459,42 @@ function planetClicked(planetEl, isAI) {
         if((selectedPlanets.length === 0) && !isAI) {
           connectionId = planetId + connectedPlanets[i].to;
           receiver = planets[connectedPlanets[i].to];
-          connectedPlanets.splice(i, 1);
+          // connectedPlanets.splice(i, 1);
+          gameRef.child("connectedPlanets/" + connectionId).remove();
 
           $("#"+connectionId+"One").remove();
           $("#"+connectionId+"Two").remove();
 
-          for(var j = 0; j < connectionIds.length; j++) {
-            if(connectionIds[j] === connectionId) {
-              connectionIds.splice(j, 1);
+          // for(var j = 0; j < connectionIds.length; j++) {
+          //   if(connectionIds[j] === connectionId) {
+          //     connectionIds.splice(j, 1);
+          //   }
+          // }
+
+          gameRef.child("connectionIds").once("value", function(snap) {
+            for (var j = 0; j < snap.val().length; j++) {
+              if (snap.val()[j] === connectionId) {
+                gameRef.child("connectionIds/" + snap.val().name()).remove();
+                break;
+              }
             }
-          }
+          });
 
           if(receiver.population < 1) {
             //fixes bug #14
-            $("#"+receiver.id).removeClass(receiver.color);
-            $("#"+receiver.id).addClass("grey");
-            receiver.color = "grey";
-            receiver.population = 0;
+            // $("#"+receiver.id).removeClass(receiver.color);
+            // $("#"+receiver.id).addClass("grey");
+            gameRef.child("planets/" + receiver.id + "/classColor").set("grey");
+            // receiver.color = "grey";
+            gameRef.child("planets/" + receiver.id + "/color").set("grey");
+            // receiver.population = 0;
+            gameRef.child("planets/" + receiver.id + "/population").set(0);
           }
         }else if((selectedPlanetsAI.length === 0) && isAI) {
           connectionId = planetId + connectedPlanets[i].to;
           receiver = planets[connectedPlanets[i].to];
-          connectedPlanets.splice(i, 1);
+          // connectedPlanets.splice(i, 1);
+          gameRef.child("connectedPlanets/" + connectionId).remove();
 
           var connectionExists = $("#"+connectionId+"One");
           if(connectionExists.length) {
@@ -459,18 +502,30 @@ function planetClicked(planetEl, isAI) {
             $("#"+connectionId+"Two").remove();
           }
 
-          for(var j = 0; j < connectionIds.length; j++) {
-            if(connectionIds[j] === connectionId) {
-              connectionIds.splice(j, 1);
+          // for(var j = 0; j < connectionIds.length; j++) {
+          //   if(connectionIds[j] === connectionId) {
+          //     connectionIds.splice(j, 1);
+          //   }
+          // }
+
+          gameRef.child("connectionIds").once("value", function(snap) {
+            for (var j = 0; j < snap.val().length; j++) {
+              if (snap.val()[j] === connectionId) {
+                gameRef.child("connectionIds/" + snap.val().name()).remove();
+                break;
+              }
             }
-          }
+          });
 
           if(receiver.population < 1) {
             //fixes bug #14
-            $("#"+receiver.id).removeClass(receiver.color);
-            $("#"+receiver.id).addClass("grey");
-            receiver.color = "grey";
-            receiver.population = 0;
+            // $("#"+receiver.id).removeClass(receiver.color);
+            // $("#"+receiver.id).addClass("grey");
+            gameRef.child("planets/" + receiver.id + "/classColor").set("grey");
+            // receiver.color = "grey";
+            gameRef.child("planets/" + receiver.id + "/color").set("grey");
+            // receiver.population = 0;
+            gameRef.child("planets/" + receiver.id + "/population").set(0);
           }
         }
       }
@@ -499,8 +554,9 @@ function planetClicked(planetEl, isAI) {
       }
 
       //make connection between the two planets
-      connectedPlanets.push({from: selectedPlanets[0], to: planetId});
       connectionId = selectedPlanets[0] + planetId;
+      // connectedPlanets.push({from: selectedPlanets[0], to: planetId});
+      gameRef.child("connectedPlanets/" + connectionId).set({from: selectedPlanets[0], to: planetId});
       //deselect planets
       $('#'+selectedPlanets[0]).toggleClass('selected');
       planets[selectedPlanets[0]].selected = !planets[selectedPlanets[0]].selected;
@@ -515,7 +571,8 @@ function planetClicked(planetEl, isAI) {
       connectionElTwo = $("#"+connectionId+"Two");
       connectionElOne.css("width", planetDistance);
       connectionElTwo.css("width", planetDistance);
-      connectionIds.push(connectionId);
+      // connectionIds.push(connectionId);
+      gameRef.child("connectionIds").push(connectionId);
 
       planetOnex = planets[selectedPlanets[0]].x;
       planetOney = planets[selectedPlanets[0]].y;
@@ -569,8 +626,9 @@ function planetClicked(planetEl, isAI) {
       selectedPlanetsAI = [];
     }else {
       //make connection between the two planets
-      connectedPlanets.push({from: selectedPlanetsAI[0], to: planetId});
       connectionId = selectedPlanetsAI[0] + planetId;
+      // connectedPlanets.push({from: selectedPlanetsAI[0], to: planetId});
+      gameRef.child("connectedPlanets/" + connectionId).set({from: selectedPlanets[0], to: planetId});
       //deselect planets
       planets[selectedPlanetsAI[0]].selectedAI = !planets[selectedPlanetsAI[0]].selectedAI;
       if(inDebug) {
@@ -606,7 +664,8 @@ function planetClicked(planetEl, isAI) {
         connectionElTwo.css("transform", "rotate("+angle+"rad)");                 //DEBUG
       }                                                                           //DEBUG END
 
-      connectionIds.push(connectionId);
+      // connectionIds.push(connectionId);
+      gameRef.child("connectionIds").push(connectionId);
 
       //finish deselecting planets
       selectedPlanetsAI = [];
@@ -1239,7 +1298,6 @@ var startGame = function() {
         delete whoWon;
 
         clearInterval(mainLoop);
-        clearInterval(aiChecks);
       }
     }
   }, 33);
