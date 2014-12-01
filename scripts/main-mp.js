@@ -200,8 +200,9 @@ function setUpPlanetListeners() {
 
   gameRef.child("connectedPlanets").on("child_removed", function(snapshot) {
     for (var i = 0; i < connectedPlanets.length; i++) {
-      if (connectedPlanets[i] === snapshot.val()) {
-        connectionIds.splice(i, 1);
+      if (connectedPlanets[i].toPlanet === snapshot.val().toPlanet
+          && connectedPlanets[i].fromPlanet === snapshot.val().fromPlanet) {
+        connectedPlanets.splice(i, 1);
         break;
       }
     }
@@ -282,8 +283,10 @@ function setUpViewport() {
 
 function findAnotherGame() {
   console.log("findAnotherGame");
+  gameRef.remove();
   viewport.html("");
   starterPlanetSelected = 0;
+  //TODO: unset all planet click bindings.
   gameStarted = false;
   Firebase.goOffline();
   Firebase.goOnline();
