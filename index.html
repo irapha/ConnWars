@@ -27,6 +27,7 @@
         font-weight:bold;
         padding: 0px 20px 20px 20px;
         color: white;
+        vertical-align:top;
       }
       #mute-button {
         float:left;
@@ -39,6 +40,10 @@
       }
       #soundloop {
         display: none;
+      }
+
+      #instructions-wrapper {
+        color:white;
       }
     </style>
   </head>
@@ -59,9 +64,18 @@
             </a>
 
             <a href="multiplayer.html">
-                <div class="option">MULTIPLAYER</div>
+                <div class="option">MULTIPLAYER<br/><small>(beta)</small></div>
             </a>
 
+        </div>
+
+        <div id="instructions-wrapper">
+            <br/>
+            <br/>
+            <h3>
+                Instructions
+            </h3>
+            To start, click on a planet to settle.<br />Click on two planets in a row to connect them.<br/>Connect to enemy planets to eliminate their population.
         </div>
 
     </div>
