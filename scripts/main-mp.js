@@ -43,6 +43,8 @@ function findGame() {
 
   //consider changing this to a "transaction". Might be better with multiple players trying to connect
   gamesRef.once("value", function(snapshot) {
+    //this was not running properly after findinganothergame, because Firebase.goOnline() takes a while...
+
     if(!snapshot.val()) {
       //no games. create our own
       createGame();
@@ -323,10 +325,11 @@ function findAnotherGame() {
 
   gameStarted = false;
   firebase.remove(function() {
-    Firebase.goOnline();
-    Firebase.goOffline();
+    //these need to go away. They are messing up re-matchmaking
+    // Firebase.goOnline();
+    // Firebase.goOffline();
     assignId();
-    findGame();
+    setTimeout(findGame(), 1000);
   });
 }
 
@@ -517,9 +520,10 @@ function planetClicked(planetEl, isAI) {
           // }
 
           gameRef.child("connectionIds").once("value", function(snap) {
-            for (var j = 0; j < snap.val().length; j++) {
-              if (snap.val()[j] === connectionId) {
-                gameRef.child("connectionIds/" + snap.val().name()).remove();
+            var keys = Object.keys(snap.val());
+            for (var j in keys) {
+              if (snap.val()[keys[j]] === connectionId) {
+                gameRef.child("connectionIds/" + keys[j]).remove();
                 break;
               }
             }
@@ -554,9 +558,10 @@ function planetClicked(planetEl, isAI) {
           // }
 
           gameRef.child("connectionIds").once("value", function(snap) {
-            for (var j = 0; j < snap.val().length; j++) {
-              if (snap.val()[j] === connectionId) {
-                gameRef.child("connectionIds/" + snap.val().name()).remove();
+            var keys = Object.keys(snap.val());
+            for (var j in keys) {
+              if (snap.val()[keys[j]] === connectionId) {
+                gameRef.child("connectionIds/" + keys[j]).remove();
                 break;
               }
             }
@@ -839,9 +844,10 @@ function updatePopulations() {
           // }
 
           gameRef.child("connectionIds").once("value", function(snap) {
-            for (var j = 0; j < snap.val().length; j++) {
-              if (snap.val()[j] === connectionId) {
-                gameRef.child("connectionIds/" + snap.val().name()).remove();
+            var keys = Object.keys(snap.val());
+            for (var j in keys) {
+              if (snap.val()[keys[j]] === connectionId) {
+                gameRef.child("connectionIds/" + keys[j]).remove();
                 break;
               }
             }
@@ -880,9 +886,10 @@ function updatePopulations() {
           // }
 
           gameRef.child("connectionIds").once("value", function(snap) {
-            for (var j = 0; j < snap.val().length; j++) {
-              if (snap.val()[j] === connectionId) {
-                gameRef.child("connectionIds/" + snap.val().name()).remove();
+            var keys = Object.keys(snap.val());
+            for (var j in keys) {
+              if (snap.val()[keys[j]] === connectionId) {
+                gameRef.child("connectionIds/" + keys[j]).remove();
                 break;
               }
             }
@@ -916,9 +923,10 @@ function updatePopulations() {
             // }
 
             gameRef.child("connectionIds").once("value", function(snap) {
-              for (var j = 0; j < snap.val().length; j++) {
-                if (snap.val()[j] === connectionId) {
-                  gameRef.child("connectionIds/" + snap.val().name()).remove();
+              var keys = Object.keys(snap.val());
+              for (var j in keys) {
+                if (snap.val()[keys[j]] === connectionId) {
+                  gameRef.child("connectionIds/" + keys[j]).remove();
                   break;
                 }
               }
@@ -967,9 +975,10 @@ function updatePopulations() {
                 // }
 
                 gameRef.child("connectionIds").once("value", function(snap) {
-                  for (var j = 0; j < snap.val().length; j++) {
-                    if (snap.val()[j] === connectionId) {
-                      gameRef.child("connectionIds/" + snap.val().name()).remove();
+                  var keys = Object.keys(snap.val());
+                  for (var j in keys) {
+                    if (snap.val()[keys[j]] === connectionId) {
+                      gameRef.child("connectionIds/" + keys[j]).remove();
                       break;
                     }
                   }
@@ -1200,9 +1209,10 @@ function deleteConnectionsToChaoticPlanets() {
         // }
 
         gameRef.child("connectionIds").once("value", function(snap) {
-          for (var j = 0; j < snap.val().length; j++) {
-            if (snap.val()[j] === connectionId) {
-              gameRef.child("connectionIds/" + snap.val().name()).remove();
+          var keys = Object.keys(snap.val());
+          for (var j in keys) {
+            if (snap.val()[keys[j]] === connectionId) {
+              gameRef.child("connectionIds/" + keys[j]).remove();
               break;
             }
           }
@@ -1226,9 +1236,10 @@ function deleteConnectionsToChaoticPlanets() {
       // }
 
       gameRef.child("connectionIds").once("value", function(snap) {
-        for (var j = 0; j < snap.val().length; j++) {
-          if (snap.val()[j] === connectionId) {
-            gameRef.child("connectionIds/" + snap.val().name()).remove();
+        var keys = Object.keys(snap.val());
+        for (var j in keys) {
+          if (snap.val()[keys[j]] === connectionId) {
+            gameRef.child("connectionIds/" + keys[j]).remove();
             break;
           }
         }
