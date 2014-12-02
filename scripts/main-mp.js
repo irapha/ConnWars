@@ -309,13 +309,25 @@ function findAnotherGame() {
   displayMessage("Looking for another game.");
 
   gameRef.remove();
+  clearClickEvents();
+
   starterPlanetSelected = 0;
-  gameStarted = false;
-  Firebase.goOffline();
-  Firebase.goOnline();
+  planets = {}; //on firebase
+  planetIds = []; //on firebase
+  selectedPlanets = [];
+  selectedPlanetsAI = [];
+  connectedPlanets = []; //on firebase
+  connectionIds = [];
+  selectedPlanet = null;
   viewport.html("");
-  assignId();
-  findGame();
+
+  gameStarted = false;
+  firebase.remove(function() {
+    Firebase.goOnline();
+    Firebase.goOffline();
+    assignId();
+    findGame();
+  });
 }
 
 function setupLevel() {
@@ -752,19 +764,22 @@ function requestStarterPlanet(){
     if (isPlayerOne) {
         playerOnePickedStarterPlanet = true;
         gameRef.child("starterPlanetSelected").once("value", function(snapshot) {
-            if(!snapshot.val() || snapshot.val() === null) {
-                gameRef.child("starterPlanetSelected").on("value", function(snapshot) {
-                  if (snapshot.val() === true) {
-                    if (starterPlanetSelected !== 1) {
-                      return;
-                    }
-                    console.log("starterPlanetSelected by p2");
-                    starterPlanetSelected = 1; //now the game loop will run
-                    gameStarted = true;
-                    startGame();
-                    console.log("game should have started");
+
+            if(!snapshot.val() || snapshot.val() === null || snapshot.val() === undefined) {
+
+              gameRef.child("starterPlanetSelected").on("value", function(snap) {
+                if (snap.val() === true) {
+                  if (starterPlanetSelected === 1) {
+                    return;
                   }
-                });
+                  console.log("starterPlanetSelected by p2");
+                  starterPlanetSelected = 1; //now the game loop will run
+                  gameStarted = true;
+                  startGame();
+                  console.log("game should have started");
+                }
+              });
+
             } else if (snapshot.val() === true) {
               console.log("p2 had already selected a starter planet");
               starterPlanetSelected = 1; //now the game loop will run
@@ -773,6 +788,7 @@ function requestStarterPlanet(){
               console.log("game should have started");
             }
         });
+
     } else {
         gameRef.child("starterPlanetSelected").set(true);
         starterPlanetSelected = 1;
