@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>ConnWars - LudumDare30</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=0.6, user-scalable=0" />
+    <script src='https://cdn.firebase.com/js/client/1.1.1/firebase.js'></script>
+    <style type="text/css">
+      body {
+        background-image: url("images/stars.gif");
+        font-family: sans-serif;
+        -moz-user-select: -moz-none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+      #menu {
+        left:auto;
+        right:auto;
+        text-align:center;
+      }
+      .option {
+        display:inline-block;
+        font-size: 22px;
+        font-weight:bold;
+        padding: 0px 20px 20px 20px;
+        color: white;
+      }
+      #mute-button {
+        float:left;
+        position:absolute;
+        color: white;
+        padding: 4px;
+        border: 2px solid white;
+        cursor: pointer;
+        margin-left: 10px;
+      }
+      #soundloop {
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id='mute-button'>Mute</div>
+
+    <div id="menu">
+
+        <div id="logo-wrapper">
+            <img src="images/logo.png" style="height: 300px;" />
+        </div>
+
+        <div id="option-wrapper">
+
+            <a href="singleplayer.html">
+                <div class="option">SINGLEPLAYER</div>
+            </a>
+
+            <a href="multiplayer.html">
+                <div class="option">MULTIPLAYER</div>
+            </a>
+
+        </div>
+
+    </div>
+
+    <audio controls autoplay and loop id = "soundloop">
+        <source src="audio/ludumdaremenu.mp3" type="audio/mpeg">
+    </audio>
+
+  </body>
+</html>

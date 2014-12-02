@@ -84,7 +84,8 @@ function createGame() {
                   "width": null,
                   "starterPlanetSelected": null,
                   "connectionIds": [],
-                  "connectedPlanets": []
+                  "connectedPlanets": [],
+                  "doneSettingUp": null
               });
 
   console.log("creating game: ");
@@ -215,26 +216,20 @@ function setUpPlanetListeners() {
   }
 }
 
-function waitForPlanets(numberOfTries) {
+function waitForPlanets() {
   if (!numberOfTries || numberOfTries === undefined) {
     var numberOfTries = 0;
   }
 
   console.log("waitForPlanets");
 
-  if (Object.keys(planets).length < planetsPerSide*2) {
-    numberOfTries++;
-    if (numberOfTries < 15) {
-
-      setTimeout(function() {
-        waitForPlanets(numberOfTries);
-      }, 50);
-
+  gameRef.child("doneSettingUp").on("value", function(snapshot) {
+    if(snapshot.val() === null) {
       return;
     }
-  }
 
-  requestStarterPlanet();  //TODO: BUG somehow this got called before the number of planets was drawn. Maybe we should be checking for planet drawn, not for array length....
+    requestStarterPlanet();
+  });
 }
 
 function waitForPlayer2() {
@@ -286,7 +281,6 @@ function findAnotherGame() {
   gameRef.remove();
   viewport.html("");
   starterPlanetSelected = 0;
-  //TODO: unset all planet click bindings.
   gameStarted = false;
   Firebase.goOffline();
   Firebase.goOnline();
@@ -374,6 +368,8 @@ function setupLevel() {
       }
     });
   }
+
+  gameRef.child("doneSettingUp").set(true);
 
   requestStarterPlanet();
 }
