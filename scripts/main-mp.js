@@ -832,11 +832,20 @@ function updatePopulations() {
           $("#"+connectionId+"One").remove();
           $("#"+connectionId+"Two").remove();
 
-          for(var j = 0; j < connectionIds.length; j++) {
-            if(connectionIds[j] === connectionId) {
-              connectionIds.splice(j, 1);
+          // for(var j = 0; j < connectionIds.length; j++) {
+          //   if(connectionIds[j] === connectionId) {
+          //     connectionIds.splice(j, 1);
+          //   }
+          // }
+
+          gameRef.child("connectionIds").once("value", function(snap) {
+            for (var j = 0; j < snap.val().length; j++) {
+              if (snap.val()[j] === connectionId) {
+                gameRef.child("connectionIds/" + snap.val().name()).remove();
+                break;
+              }
             }
-          }
+          });
         }
       }
     }
@@ -864,11 +873,20 @@ function updatePopulations() {
           $("#"+connectionId+"One").remove();
           $("#"+connectionId+"Two").remove();
 
-          for(var j = 0; j < connectionIds.length; j++) {
-            if(connectionIds[j] === connectionId) {
-              connectionIds.splice(j, 1);
+          // for(var j = 0; j < connectionIds.length; j++) {
+          //   if(connectionIds[j] === connectionId) {
+          //     connectionIds.splice(j, 1);
+          //   }
+          // }
+
+          gameRef.child("connectionIds").once("value", function(snap) {
+            for (var j = 0; j < snap.val().length; j++) {
+              if (snap.val()[j] === connectionId) {
+                gameRef.child("connectionIds/" + snap.val().name()).remove();
+                break;
+              }
             }
-          }
+          });
         }
       }
     }
@@ -891,11 +909,20 @@ function updatePopulations() {
               $("#"+connectionId+"Two").remove();
             }
 
-            for(var j = 0; j < connectionIds.length; j++) {
-              if(connectionIds[j] === connectionId) {
-                connectionIds.splice(j, 1);
+            // for(var j = 0; j < connectionIds.length; j++) {
+            //   if(connectionIds[j] === connectionId) {
+            //     connectionIds.splice(j, 1);
+            //   }
+            // }
+
+            gameRef.child("connectionIds").once("value", function(snap) {
+              for (var j = 0; j < snap.val().length; j++) {
+                if (snap.val()[j] === connectionId) {
+                  gameRef.child("connectionIds/" + snap.val().name()).remove();
+                  break;
+                }
               }
-            }
+            });
           }
         }
       }else {
@@ -933,11 +960,20 @@ function updatePopulations() {
                   $("#"+connectionId+"Two").remove();
                 }
 
-                for(var k = 0; k < connectionIds.length; k++) {
-                  if(connectionIds[k] === connectionId) {
-                    connectionIds.splice(k, 1);
+                // for(var k = 0; k < connectionIds.length; k++) {
+                //   if(connectionIds[k] === connectionId) {
+                //     connectionIds.splice(k, 1);
+                //   }
+                // }
+
+                gameRef.child("connectionIds").once("value", function(snap) {
+                  for (var j = 0; j < snap.val().length; j++) {
+                    if (snap.val()[j] === connectionId) {
+                      gameRef.child("connectionIds/" + snap.val().name()).remove();
+                      break;
+                    }
                   }
-                }
+                });
               }
             }
           }
@@ -1157,11 +1193,20 @@ function deleteConnectionsToChaoticPlanets() {
           $("#"+connectionId+"Two").remove();
         }
 
-        for(var k = 0; k < connectionIds.length; k++) {
-          if(connectionIds[k] === connectionId) {
-            connectionIds.splice(k, 1);
+        // for(var k = 0; k < connectionIds.length; k++) {
+        //   if(connectionIds[k] === connectionId) {
+        //     connectionIds.splice(k, 1);
+        //   }
+        // }
+
+        gameRef.child("connectionIds").once("value", function(snap) {
+          for (var j = 0; j < snap.val().length; j++) {
+            if (snap.val()[j] === connectionId) {
+              gameRef.child("connectionIds/" + snap.val().name()).remove();
+              break;
+            }
           }
-        }
+        });
       }
     }else if(planets[connectedPlanets[i].from].inChaos === true) {
       connectionId = connectedPlanets[i].from + connectedPlanets[i].to;
@@ -1174,11 +1219,20 @@ function deleteConnectionsToChaoticPlanets() {
         $("#"+connectionId+"Two").remove();
       }
 
-      for(var k = 0; k < connectionIds.length; k++) {
-        if(connectionIds[k] === connectionId) {
-          connectionIds.splice(k, 1);
+      // for(var k = 0; k < connectionIds.length; k++) {
+      //   if(connectionIds[k] === connectionId) {
+      //     connectionIds.splice(k, 1);
+      //   }
+      // }
+
+      gameRef.child("connectionIds").once("value", function(snap) {
+        for (var j = 0; j < snap.val().length; j++) {
+          if (snap.val()[j] === connectionId) {
+            gameRef.child("connectionIds/" + snap.val().name()).remove();
+            break;
+          }
         }
-      }
+      });
     }
   }
 }
