@@ -18,6 +18,12 @@ var isPlayerOne = false;
 
 var firebase = new Firebase("https://connwars.firebaseio.com/");
 
+function displayMessage(msg) {
+  $("#startmenu").show();
+  $("#settlemsg").show();
+  $("#settlemsg").text(msg);
+}
+
 var playerId;
 
 function assignId() {
@@ -32,6 +38,9 @@ var gamesRef = firebase.child("games");
 var gameRef;
 
 function findGame() {
+  console.log("finding a game.");
+  displayMessage("Looking for an open game.");
+
   //consider changing this to a "transaction". Might be better with multiple players trying to connect
   gamesRef.once("value", function(snapshot) {
     if(!snapshot.val()) {
@@ -67,6 +76,8 @@ function enterGame(game, hostId) {
   console.log("entering game:");
   console.log(gameRef);
 
+  displayMessage("Game found. Now entering match.");
+
   gameRef.onDisconnect().remove();
   setViewportListener();
   setUpViewport();
@@ -91,6 +102,8 @@ function createGame() {
   console.log("creating game: ");
   console.log(gameRef);
 
+  displayMessage("Creating a match");
+
   gameRef.onDisconnect().remove();
   setViewportListener();
   waitForPlayer2();
@@ -98,6 +111,9 @@ function createGame() {
 
 function setViewportListener() {
   console.log("setViewportListener");
+
+  displayMessage("Setting up.");
+
   var heightModified = false;
   var widthModified = false;
 
@@ -133,6 +149,9 @@ function setViewportListener() {
 
 function setUpPlanetListeners() {
   console.log("setUpPlanetListeners");
+
+  displayMessage("Looking for an open game.");
+
   gameRef.child("planetIds").on("value", function (snapshot) {
     planetIds = [];
 
@@ -221,7 +240,7 @@ function waitForPlanets() {
     var numberOfTries = 0;
   }
 
-  console.log("waitForPlanets");
+  displayMessage("Waiting for game information.");
 
   gameRef.child("doneSettingUp").on("value", function(snapshot) {
     if(snapshot.val() === null) {
@@ -234,6 +253,9 @@ function waitForPlanets() {
 
 function waitForPlayer2() {
   console.log("waitForPlayer2");
+
+  displayMessage("Waiting for another player.");
+
   //wait for player2 to enter game
   gameRef.child("player2").on("value", function(snapshot) {
     if (!snapshot.val()) {
@@ -252,6 +274,9 @@ function listenForDisconnect(playerId) {
   firebase.child("playerList/" + playerId).on("child_removed", function(snapshot) {
 
     console.log("other player disconected");
+
+    displayMessage("Player 2 disconnected.");
+
     //this is here so we only run the function once
     if(snapshot.name() === "height") {
         findAnotherGame();
@@ -261,6 +286,8 @@ function listenForDisconnect(playerId) {
 
 function setUpViewport() {
   console.log("setting up viewport");
+
+  displayMessage("Setting up.");
 
   gameRef.once("value", function(snapshot) {
     var gameObj = snapshot.val();
@@ -278,18 +305,24 @@ function setUpViewport() {
 
 function findAnotherGame() {
   console.log("findAnotherGame");
+
+  displayMessage("Looking for another game.");
+
   gameRef.remove();
-  viewport.html("");
   starterPlanetSelected = 0;
   gameStarted = false;
   Firebase.goOffline();
   Firebase.goOnline();
+  viewport.html("");
   assignId();
   findGame();
 }
 
 function setupLevel() {
   console.log("setupLevel");
+
+  displayMessage("Setting up.");
+
   var cellWidth = levelWidth/10;
   var cellHeight = levelHeight/10;
   var currentId = 0;
@@ -376,6 +409,7 @@ function setupLevel() {
 
 function setClickEvents() {
   console.log("setClickEvents");
+
   $(".planet").click(function(event) {
     event.stopPropagation();
     planetClicked($(this), false);
@@ -690,6 +724,8 @@ var playerOnePickedStarterPlanet = false;
 
 function requestStarterPlanet(){
   console.log("listening for starter planet");
+
+  displayMessage("Select a starter planet and wait for the game to start.");
 
   setClickEvents();
 
@@ -1232,11 +1268,7 @@ function checkWinState() {
   }
 }
 
-// setupLevel();
-// initialDraw();
-// requestStarterPlanet();
-
-var winStateAlreadyBinded = false; //delete this
+var winStateAlreadyBinded = false;
 
 function checkWinStateOnServer(cb) {
   if (winStateAlreadyBinded) {
