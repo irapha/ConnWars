@@ -194,7 +194,6 @@ function setUpPlanetListeners() {
 
   gameRef.child("connectionIds").on("value", function(snapshot) {
     var values = snapshot.val();
-    console.log(values);
 
     var result = [];
     for (var key in values) {
@@ -206,7 +205,6 @@ function setUpPlanetListeners() {
 
   gameRef.child("connectedPlanets").on("value", function(snapshot) {
     var values = snapshot.val();
-    console.log(values);
 
     var result = [];
     for (var key in values) {
@@ -217,8 +215,6 @@ function setUpPlanetListeners() {
   });
 
   // gameRef.child("connectionIds").on("child_added", function(snapshot) {
-  //   console.log("1.2 pushed to connectedPlanets:");
-  //   console.log(snapshot.val());
   //   connectionIds.push(snapshot.val());
   // });
   //
@@ -226,8 +222,6 @@ function setUpPlanetListeners() {
   //   for (var i = 0; i < connectionIds.length; i++) {
   //     if (connectionIds[i] === snapshot.val()) {
   //       connectionIds.splice(i, 1);
-  //       console.log("2.2 deleted from connectionIds:");
-  //       console.log(snapshot.val());
   //       break;
   //     }
   //   }
@@ -235,8 +229,6 @@ function setUpPlanetListeners() {
   //
   // gameRef.child("connectedPlanets").on("child_added", function(snapshot) {
   //   connectedPlanets.push(snapshot.val());
-  //   console.log("1.1 pushed to connectedPlanets:");
-  //   console.log(snapshot.val());
   // });
   //
   // gameRef.child("connectedPlanets").on("child_removed", function(snapshot) {
@@ -244,8 +236,6 @@ function setUpPlanetListeners() {
   //     if (connectedPlanets[i].toPlanet === snapshot.val().toPlanet
   //         && connectedPlanets[i].fromPlanet === snapshot.val().fromPlanet) {
   //       connectedPlanets.splice(i, 1);
-  //       console.log("2.1 deleted from connectedPlanets:");
-  //       console.log(snapshot.val());
   //       break;
   //     }
   //   }
@@ -493,8 +483,6 @@ function getPlanetDistance(planetOneId, planetTwoId) {
 }
 
 function deleteConnection(connectionId) {
-  console.log("> deleting connection: " + connectionId);
-
   gameRef.child("connectedPlanets/" + connectionId).remove();
   gameRef.child("connectionIds/" + connectionId).remove();
 }
@@ -521,21 +509,12 @@ function planetClicked(planetEl, isAI) {
   if(planet.color === userColor) {
     for(var i = 0; i < connectedPlanets.length; i++) {
       if(connectedPlanets[i].from === planetId) {
-
-        //THIS IS NOT BEING OUTPUTTED.
-        // console.log("planet was connected to: " + connectedPlanets[i].to);
-
         if((selectedPlanets.length === 0)) {
-          // console.log("no planets were selected before.");
 
           connectionId = planetId + connectedPlanets[i].to;
           receiver = planets[connectedPlanets[i].to];
 
-          // console.log(connectedPlanets);
-          // console.log(connectionIds);
           deleteConnection(connectionId);
-          // console.log(connectedPlanets);
-          // console.log(connectionIds);
 
           $("#"+connectionId+"One").remove();
           $("#"+connectionId+"Two").remove();
