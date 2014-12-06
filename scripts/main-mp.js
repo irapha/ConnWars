@@ -38,7 +38,6 @@ var gamesRef = firebase.child("games");
 var gameRef;
 
 function findGame() {
-  console.log("finding a game.");
   displayMessage("Looking for an open game.");
 
   //consider changing this to a "transaction". Might be better with multiple players trying to connect
@@ -75,9 +74,6 @@ function enterGame(game, hostId) {
   gameRef = game;
   gameRef.child("player2").set(playerId);
 
-  console.log("entering game:");
-  console.log(gameRef);
-
   displayMessage("Game found. Now entering match.");
 
   gameRef.onDisconnect().remove();
@@ -101,9 +97,6 @@ function createGame() {
                   "doneSettingUp": null
               });
 
-  console.log("creating game: ");
-  console.log(gameRef);
-
   displayMessage("Creating a match");
 
   gameRef.onDisconnect().remove();
@@ -112,7 +105,6 @@ function createGame() {
 }
 
 function setViewportListener() {
-  console.log("setViewportListener");
 
   displayMessage("Setting up.");
 
@@ -150,8 +142,6 @@ function setViewportListener() {
 }
 
 function setUpPlanetListeners() {
-  console.log("setUpPlanetListeners");
-
   displayMessage("Looking for an open game.");
 
   gameRef.child("planetIds").on("value", function (snapshot) {
@@ -202,33 +192,64 @@ function setUpPlanetListeners() {
     });
   });
 
+  gameRef.child("connectionIds").on("value", function(snapshot) {
+    var values = snapshot.val();
+    console.log(values);
 
-  gameRef.child("connectionIds").on("child_added", function(snapshot) {
-    connectionIds.push(snapshot.val());
-  });
-
-  gameRef.child("connectionIds").on("child_removed", function(snapshot) {
-    for (var i = 0; i < connectionIds.length; i++) {
-      if (connectionIds[i] === snapshot.val()) {
-        connectionIds.splice(i, 1);
-        break;
-      }
+    var result = [];
+    for (var key in values) {
+      result.push(values[key]);
     }
+
+    connectionIds = result;
   });
 
-  gameRef.child("connectedPlanets").on("child_added", function(snapshot) {
-    connectedPlanets.push(snapshot.val());
-  });
+  gameRef.child("connectedPlanets").on("value", function(snapshot) {
+    var values = snapshot.val();
+    console.log(values);
 
-  gameRef.child("connectedPlanets").on("child_removed", function(snapshot) {
-    for (var i = 0; i < connectedPlanets.length; i++) {
-      if (connectedPlanets[i].toPlanet === snapshot.val().toPlanet
-          && connectedPlanets[i].fromPlanet === snapshot.val().fromPlanet) {
-        connectedPlanets.splice(i, 1);
-        break;
-      }
+    var result = [];
+    for (var key in values) {
+      result.push(values[key]);
     }
+
+    connectedPlanets = result;
   });
+
+  // gameRef.child("connectionIds").on("child_added", function(snapshot) {
+  //   console.log("1.2 pushed to connectedPlanets:");
+  //   console.log(snapshot.val());
+  //   connectionIds.push(snapshot.val());
+  // });
+  //
+  // gameRef.child("connectionIds").on("child_removed", function(snapshot) {
+  //   for (var i = 0; i < connectionIds.length; i++) {
+  //     if (connectionIds[i] === snapshot.val()) {
+  //       connectionIds.splice(i, 1);
+  //       console.log("2.2 deleted from connectionIds:");
+  //       console.log(snapshot.val());
+  //       break;
+  //     }
+  //   }
+  // });
+  //
+  // gameRef.child("connectedPlanets").on("child_added", function(snapshot) {
+  //   connectedPlanets.push(snapshot.val());
+  //   console.log("1.1 pushed to connectedPlanets:");
+  //   console.log(snapshot.val());
+  // });
+  //
+  // gameRef.child("connectedPlanets").on("child_removed", function(snapshot) {
+  //   for (var i = 0; i < connectedPlanets.length; i++) {
+  //     if (connectedPlanets[i].toPlanet === snapshot.val().toPlanet
+  //         && connectedPlanets[i].fromPlanet === snapshot.val().fromPlanet) {
+  //       connectedPlanets.splice(i, 1);
+  //       console.log("2.1 deleted from connectedPlanets:");
+  //       console.log(snapshot.val());
+  //       break;
+  //     }
+  //   }
+  // });
 
   if (isPlayerOne) {
     setupLevel(); // only for playerOne
@@ -254,8 +275,6 @@ function waitForPlanets() {
 }
 
 function waitForPlayer2() {
-  console.log("waitForPlayer2");
-
   displayMessage("Waiting for another player.");
 
   //wait for player2 to enter game
@@ -272,10 +291,7 @@ function waitForPlayer2() {
 }
 
 function listenForDisconnect(playerId) {
-  console.log("listenForDisconnect");
   firebase.child("playerList/" + playerId).on("child_removed", function(snapshot) {
-
-    console.log("other player disconected");
 
     displayMessage("Player 2 disconnected.");
 
@@ -287,8 +303,6 @@ function listenForDisconnect(playerId) {
 }
 
 function setUpViewport() {
-  console.log("setting up viewport");
-
   displayMessage("Setting up.");
 
   gameRef.once("value", function(snapshot) {
@@ -306,8 +320,6 @@ function setUpViewport() {
 }
 
 function findAnotherGame() {
-  console.log("findAnotherGame");
-
   displayMessage("Looking for another game.");
 
   gameRef.remove();
@@ -334,8 +346,6 @@ function findAnotherGame() {
 }
 
 function setupLevel() {
-  console.log("setupLevel");
-
   displayMessage("Setting up.");
 
   var cellWidth = levelWidth/10;
@@ -423,8 +433,6 @@ function setupLevel() {
 }
 
 function setClickEvents() {
-  console.log("setClickEvents");
-
   $(".planet").click(function(event) {
     event.stopPropagation();
     planetClicked($(this), false);
@@ -462,7 +470,6 @@ function initialDraw() {
 }
 
 function drawPlanet(planetId) {
-  console.log("drawPlanet");
   var planet = planets[planetId];
   var planetEl = $("#"+planetId);
   planetEl.css("left", planet.x-15);
@@ -485,7 +492,17 @@ function getPlanetDistance(planetOneId, planetTwoId) {
   return distance;
 }
 
-var isAI;
+function deleteConnection(connectionId) {
+  console.log("> deleting connection: " + connectionId);
+
+  gameRef.child("connectedPlanets/" + connectionId).remove();
+  gameRef.child("connectionIds/" + connectionId).remove();
+}
+
+function createConnection(connectionId, from, to) {
+  gameRef.child("connectedPlanets/" + connectionId).set({"from": from, "to": to});
+  gameRef.child("connectionIds/" + connectionId).set(connectionId);
+}
 
 function planetClicked(planetEl, isAI) {
   //isAI = typeof isAI === undefined ? (false) : (true);
@@ -504,77 +521,30 @@ function planetClicked(planetEl, isAI) {
   if(planet.color === userColor) {
     for(var i = 0; i < connectedPlanets.length; i++) {
       if(connectedPlanets[i].from === planetId) {
-        if((selectedPlanets.length === 0) && !isAI) {
+
+        //THIS IS NOT BEING OUTPUTTED.
+        // console.log("planet was connected to: " + connectedPlanets[i].to);
+
+        if((selectedPlanets.length === 0)) {
+          // console.log("no planets were selected before.");
+
           connectionId = planetId + connectedPlanets[i].to;
           receiver = planets[connectedPlanets[i].to];
-          // connectedPlanets.splice(i, 1);
-          gameRef.child("connectedPlanets/" + connectionId).remove();
+
+          // console.log(connectedPlanets);
+          // console.log(connectionIds);
+          deleteConnection(connectionId);
+          // console.log(connectedPlanets);
+          // console.log(connectionIds);
 
           $("#"+connectionId+"One").remove();
           $("#"+connectionId+"Two").remove();
 
-          // for(var j = 0; j < connectionIds.length; j++) {
-          //   if(connectionIds[j] === connectionId) {
-          //     connectionIds.splice(j, 1);
-          //   }
-          // }
-
-          gameRef.child("connectionIds").once("value", function(snap) {
-            var keys = Object.keys(snap.val());
-            for (var j in keys) {
-              if (snap.val()[keys[j]] === connectionId) {
-                gameRef.child("connectionIds/" + keys[j]).remove();
-                break;
-              }
-            }
-          });
-
           if(receiver.population < 1) {
+            //TODO: might be causing another bug...
             //fixes bug #14
-            // $("#"+receiver.id).removeClass(receiver.color);
-            // $("#"+receiver.id).addClass("grey");
             gameRef.child("planets/" + receiver.id + "/classColor").set("grey");
-            // receiver.color = "grey";
             gameRef.child("planets/" + receiver.id + "/color").set("grey");
-            // receiver.population = 0;
-            gameRef.child("planets/" + receiver.id + "/population").set(0);
-          }
-        }else if((selectedPlanetsAI.length === 0) && isAI) {
-          connectionId = planetId + connectedPlanets[i].to;
-          receiver = planets[connectedPlanets[i].to];
-          // connectedPlanets.splice(i, 1);
-          gameRef.child("connectedPlanets/" + connectionId).remove();
-
-          var connectionExists = $("#"+connectionId+"One");
-          if(connectionExists.length) {
-            $("#"+connectionId+"One").remove();
-            $("#"+connectionId+"Two").remove();
-          }
-
-          // for(var j = 0; j < connectionIds.length; j++) {
-          //   if(connectionIds[j] === connectionId) {
-          //     connectionIds.splice(j, 1);
-          //   }
-          // }
-
-          gameRef.child("connectionIds").once("value", function(snap) {
-            var keys = Object.keys(snap.val());
-            for (var j in keys) {
-              if (snap.val()[keys[j]] === connectionId) {
-                gameRef.child("connectionIds/" + keys[j]).remove();
-                break;
-              }
-            }
-          });
-
-          if(receiver.population < 1) {
-            //fixes bug #14
-            // $("#"+receiver.id).removeClass(receiver.color);
-            // $("#"+receiver.id).addClass("grey");
-            gameRef.child("planets/" + receiver.id + "/classColor").set("grey");
-            // receiver.color = "grey";
-            gameRef.child("planets/" + receiver.id + "/color").set("grey");
-            // receiver.population = 0;
             gameRef.child("planets/" + receiver.id + "/population").set(0);
           }
         }
@@ -582,13 +552,13 @@ function planetClicked(planetEl, isAI) {
     }
   }
 
-  if(selectedPlanets.length === 0 && !isAI && planet.inChaos === false) {
+  if(selectedPlanets.length === 0 && planet.inChaos === false) {
     if(planet.color === userColor) {
       planet.selected = !planet.selected;
       planetEl.toggleClass('selected');
       selectedPlanets.push(planetId);
     }
-  }else if(selectedPlanets.length === 1 && !isAI) {
+  }else if(selectedPlanets.length === 1) {
     if(selectedPlanets[0] === planetId){
       planet.selected = !planet.selected;
       planetEl.toggleClass('selected');
@@ -605,8 +575,9 @@ function planetClicked(planetEl, isAI) {
 
       //make connection between the two planets
       connectionId = selectedPlanets[0] + planetId;
-      // connectedPlanets.push({from: selectedPlanets[0], to: planetId});
-      gameRef.child("connectedPlanets/" + connectionId).set({from: selectedPlanets[0], to: planetId});
+
+      createConnection(connectionId, selectedPlanets[0], planetId);
+
       //deselect planets
       $('#'+selectedPlanets[0]).toggleClass('selected');
       planets[selectedPlanets[0]].selected = !planets[selectedPlanets[0]].selected;
@@ -621,8 +592,6 @@ function planetClicked(planetEl, isAI) {
       connectionElTwo = $("#"+connectionId+"Two");
       connectionElOne.css("width", planetDistance);
       connectionElTwo.css("width", planetDistance);
-      // connectionIds.push(connectionId);
-      gameRef.child("connectionIds").push(connectionId);
 
       planetOnex = planets[selectedPlanets[0]].x;
       planetOney = planets[selectedPlanets[0]].y;
@@ -643,7 +612,7 @@ function planetClicked(planetEl, isAI) {
       //finish deselecting planets
       selectedPlanets = [];
     }
-  }else if(selectedPlanets.length > 2 && !isAI) {
+  }else if(selectedPlanets.length > 2) {
     //this will only run if, for some reason,
     //a bug happened and two planets remained selected.
 
@@ -659,88 +628,12 @@ function planetClicked(planetEl, isAI) {
     selectedPlanets.push(planetId);
     planetEl.toggleClass('selected');
 
-  }else if(selectedPlanetsAI.length === 0 && isAI) { //start AI
-    if(planet.color === userColor) {
-      planet.selectedAI = !planet.selectedAI;
-      if(inDebug) {
-        planetEl.toggleClass('selected');                                         //DEBUG
-      }
-      selectedPlanetsAI.push(planetId);
-    }
-  }else if(selectedPlanetsAI.length === 1 && isAI) {
-    if(selectedPlanetsAI[0] === planetId){
-      planet.selectedAI = !planet.selectedAI;
-      if(inDebug) {
-        planetEl.toggleClass('selected');                                         //DEBUG
-      }
-      selectedPlanetsAI = [];
-    }else {
-      //make connection between the two planets
-      connectionId = selectedPlanetsAI[0] + planetId;
-      // connectedPlanets.push({from: selectedPlanetsAI[0], to: planetId});
-      gameRef.child("connectedPlanets/" + connectionId).set({from: selectedPlanets[0], to: planetId});
-      //deselect planets
-      planets[selectedPlanetsAI[0]].selectedAI = !planets[selectedPlanetsAI[0]].selectedAI;
-      if(inDebug) {
-        $('#'+selectedPlanetsAI[0]).toggleClass('selected');                      //DEBUG
-      }
-      planet.selectedAI = !planet.selectedAI;
-      //draw connection
-      giverColor = planets[selectedPlanetsAI[0]].color;
-
-      if(inDebug) {                                                               //DEBUG START
-        planetDistance = getPlanetDistance(selectedPlanetsAI[0], planetId);       //DEBUG
-        viewport.append('<div class="connection '+giverColor+' left" id="'+connectionId+'One"></div>'); //DEBUG
-        viewport.append('<div class="connection '+giverColor+' right" id="'+connectionId+'Two"></div>'); //DEBUG
-        connectionElOne = $("#"+connectionId+"One");                              //DEBUG
-        connectionElTwo = $("#"+connectionId+"Two");                              //DEBUG
-        connectionElOne.css("width", planetDistance);                             //DEBUG
-        connectionElTwo.css("width", planetDistance);                             //DEBUG
-
-        planetOnex = planets[selectedPlanetsAI[0]].x;                             //DEBUG
-        planetOney = planets[selectedPlanetsAI[0]].y;                             //DEBUG
-        planetTwox = planets[planetId].x;                                         //DEBUG
-        planetTwoy = planets[planetId].y;                                         //DEBUG
-        deltaY = planetTwoy - planetOney;                                         //DEBUG
-        deltaX = planetTwox - planetOnex;                                         //DEBUG
-        angle = Math.atan2(deltaY, deltaX);                                       //DEBUG
-
-        connectionElOne.css('left', planetOnex);                                  //DEBUG
-        connectionElOne.css('top', planetOney - 5);                               //DEBUG
-        connectionElTwo.css('left', planetOnex);                                  //DEBUG
-        connectionElTwo.css('top', planetOney);                                   //DEBUG
-
-        connectionElOne.css("transform", "rotate("+angle+"rad)");                 //DEBUG
-        connectionElTwo.css("transform", "rotate("+angle+"rad)");                 //DEBUG
-      }                                                                           //DEBUG END
-
-      // connectionIds.push(connectionId);
-      gameRef.child("connectionIds").push(connectionId);
-
-      //finish deselecting planets
-      selectedPlanetsAI = [];
-    }
-  }else if(selectedPlanetsAI.length > 2 && isAI) {
-    //this will only run if, for some reason,
-    //a bug happened and two planets remained selected.
-
-    //deselects other selected planets
-    planets[selectedPlanetsAI[0]].selectedAI = !planets[selectedPlanetsAI[0]].selectedAI;
-
-    planets[selectedPlanetsAI[1]].selectedAI = !planets[selectedPlanetsAI[1]].selectedAI;
-
-    selectedPlanetsAI = [];
-    // select current planet
-    selectedPlanetsAI.push(planetId);
   }
-
-  delete isAI;
 }
 
 var playerOnePickedStarterPlanet = false;
 
 function requestStarterPlanet(){
-  console.log("listening for starter planet");
 
   displayMessage("Select a starter planet and wait for the game to start.");
 
@@ -757,8 +650,6 @@ function requestStarterPlanet(){
     if (planet.color !== "grey") {
       return;
     }
-
-    console.log("starter planet picked: "+ planetId);
 
     gameRef.child("planets/"+planetId+"/population").set(100);
     var starterPlanetColor = (isPlayerOne) ? ("blue") : ("red");
@@ -777,20 +668,16 @@ function requestStarterPlanet(){
                   if (starterPlanetSelected === 1) {
                     return;
                   }
-                  console.log("starterPlanetSelected by p2");
                   starterPlanetSelected = 1; //now the game loop will run
                   gameStarted = true;
                   startGame();
-                  console.log("game should have started");
                 }
               });
 
             } else if (snapshot.val() === true) {
-              console.log("p2 had already selected a starter planet");
               starterPlanetSelected = 1; //now the game loop will run
               gameStarted = true;
               startGame();
-              console.log("game should have started");
             }
         });
 
@@ -799,7 +686,6 @@ function requestStarterPlanet(){
         starterPlanetSelected = 1;
         gameStarted = true;
         startGame();
-        console.log("game should have started");
     }
 
     $("#startmenu").hide();
@@ -833,29 +719,14 @@ function updatePopulations() {
       for(var i = 0; i < connectedPlanets.length; i++) {
         if(connectedPlanets[i].from === giver.id) {
           connectionId = giver.id + connectedPlanets[i].to;
-          connectedPlanets.splice(i, 1);
+
+          deleteConnection(connectionId);
+
           $("#"+connectionId+"One").remove();
           $("#"+connectionId+"Two").remove();
-
-          // for(var j = 0; j < connectionIds.length; j++) {
-          //   if(connectionIds[j] === connectionId) {
-          //     connectionIds.splice(j, 1);
-          //   }
-          // }
-
-          gameRef.child("connectionIds").once("value", function(snap) {
-            var keys = Object.keys(snap.val());
-            for (var j in keys) {
-              if (snap.val()[keys[j]] === connectionId) {
-                gameRef.child("connectionIds/" + keys[j]).remove();
-                break;
-              }
-            }
-          });
         }
       }
     }
-    // giver.population = newPops[0];
     gameRef.child("planets/" + giver.id + "/population").set(newPops[0]);
 
     //if new population is negative, change color to oposite
@@ -866,71 +737,36 @@ function updatePopulations() {
       }else if(receiver.color === "blue") {
         var newColor = "red";
       }
-      // $("#"+receiver.id).removeClass(receiver.color);
-      // $("#"+receiver.id).addClass(newColor);
       gameRef.child("planets/" + receiver.id + "/classColor").set(newColor);
-      // receiver.color = newColor;
       gameRef.child("planets/" + receiver.id + "/color").set(newColor);
       //delete all connections from receiver.
       for(var i = 0; i < connectedPlanets.length; i++) {
         if(connectedPlanets[i].from === receiver.id) {
           connectionId = receiver.id + connectedPlanets[i].to;
-          connectedPlanets.splice(i, 1);
+
+          deleteConnection(connectionId);
+
           $("#"+connectionId+"One").remove();
           $("#"+connectionId+"Two").remove();
-
-          // for(var j = 0; j < connectionIds.length; j++) {
-          //   if(connectionIds[j] === connectionId) {
-          //     connectionIds.splice(j, 1);
-          //   }
-          // }
-
-          gameRef.child("connectionIds").once("value", function(snap) {
-            var keys = Object.keys(snap.val());
-            for (var j in keys) {
-              if (snap.val()[keys[j]] === connectionId) {
-                gameRef.child("connectionIds/" + keys[j]).remove();
-                break;
-              }
-            }
-          });
         }
       }
     }
     if(receiver.population === 0) {
       if(oldGiverColor === giver.color) {
-        // $("#"+receiver.id).removeClass(receiver.color);
-        // $("#"+receiver.id).addClass(oldGiverColor);
         gameRef.child("planets/" + receiver.id + "/classColor").set(oldGiverColor);
-        // receiver.color = oldGiverColor;
         gameRef.child("planets/" + receiver.id + "/color").set(oldGiverColor);
 
         //check if, by mistake, this planet has active connections.
         for(var i = 0; i < connectedPlanets.length; i++) {
           if(connectedPlanets[i].from === receiver.id) {
             connectionId = receiver.id + connectedPlanets[i].to;
-            connectedPlanets.splice(i, 1);
+
+            deleteConnection(connectionId);
 
             if($("#"+connectionId+"One").length !== 0) {
               $("#"+connectionId+"One").remove();
               $("#"+connectionId+"Two").remove();
             }
-
-            // for(var j = 0; j < connectionIds.length; j++) {
-            //   if(connectionIds[j] === connectionId) {
-            //     connectionIds.splice(j, 1);
-            //   }
-            // }
-
-            gameRef.child("connectionIds").once("value", function(snap) {
-              var keys = Object.keys(snap.val());
-              for (var j in keys) {
-                if (snap.val()[keys[j]] === connectionId) {
-                  gameRef.child("connectionIds/" + keys[j]).remove();
-                  break;
-                }
-              }
-            });
           }
         }
       }else {
@@ -939,27 +775,24 @@ function updatePopulations() {
         }
       }
     }
-    // receiver.population = newPops[1];
     gameRef.child("planets/" + receiver.id + "/population").set(newPops[1]);
   }
 
   for(var i = 0; i < planetIds.length; i++) {
     planet = planets[planetIds[i]];
     if(planet.population > 2) {
-        // planet.population = getNaturalGrowth(planetIds[i]);
         gameRef.child("planets/" + planet.id + "/population").set(getNaturalGrowth(planetIds[i]));
         //check for chaos
         if(planet.population === 1000) {
-          // planet.inChaos = true;
           gameRef.child("planets/" + planet.id + "/inChaos").set(true);
-          // $("#"+planet.id).addClass("chaos");
           gameRef.child("planets/" + planet.id + "/inChaosClass").set(true);
           //delete all connections TO this planet, coming from planets of the same color
           for(var j = 0; j < connectedPlanets.length; j++) {
             if(connectedPlanets[j].to === planet.id) {
               if(planets[connectedPlanets[j].to].color === planets[connectedPlanets[j].from].color) {
                 connectionId = connectedPlanets[j].from + connectedPlanets[j].to;
-                connectedPlanets.splice(j, 1);
+
+                deleteConnection(connectionId);
 
                 var connExists = $("#"+connectionId+"One");
                 if(connExists.length !== 0) {
@@ -967,29 +800,11 @@ function updatePopulations() {
                   $("#"+connectionId+"One").remove();
                   $("#"+connectionId+"Two").remove();
                 }
-
-                // for(var k = 0; k < connectionIds.length; k++) {
-                //   if(connectionIds[k] === connectionId) {
-                //     connectionIds.splice(k, 1);
-                //   }
-                // }
-
-                gameRef.child("connectionIds").once("value", function(snap) {
-                  var keys = Object.keys(snap.val());
-                  for (var j in keys) {
-                    if (snap.val()[keys[j]] === connectionId) {
-                      gameRef.child("connectionIds/" + keys[j]).remove();
-                      break;
-                    }
-                  }
-                });
               }
             }
           }
         }else if(planet.inChaos === true && planet.population <= 500) {
-          // planet.inChaos = false;
           gameRef.child("planets/" + planet.id + "/inChaos").set(false);
-          // $("#"+planet.id).removeClass("chaos");
           gameRef.child("planets/" + planet.id + "/inChaosClass").set(false);
         }
     }
@@ -1135,8 +950,7 @@ function updateAIConnectionsVisibility() {
       for(var j = 0; j < connectedPlanets.length; j++) {
         giverColor = planets[connectedPlanets[j].from].color;
 
-        if(connectedPlanets[j].to === planetId
-              && giverColor === "red") {
+        if(connectedPlanets[j].to === planetId && giverColor === "red") {
 
           conObj = {giver: connectedPlanets[j].from, receiver: connectedPlanets[j].to};
 
@@ -1193,7 +1007,8 @@ function deleteConnectionsToChaoticPlanets() {
     if(planets[connectedPlanets[i].to].inChaos === true) {
       if(planets[connectedPlanets[i].to].color === planets[connectedPlanets[i].from].color) {
         connectionId = connectedPlanets[i].from + connectedPlanets[i].to;
-        connectedPlanets.splice(i, 1);
+
+        deleteConnection(connectionId);
 
         var connExists = $("#"+connectionId+"One");
         if(connExists.length !== 0) {
@@ -1201,26 +1016,11 @@ function deleteConnectionsToChaoticPlanets() {
           $("#"+connectionId+"One").remove();
           $("#"+connectionId+"Two").remove();
         }
-
-        // for(var k = 0; k < connectionIds.length; k++) {
-        //   if(connectionIds[k] === connectionId) {
-        //     connectionIds.splice(k, 1);
-        //   }
-        // }
-
-        gameRef.child("connectionIds").once("value", function(snap) {
-          var keys = Object.keys(snap.val());
-          for (var j in keys) {
-            if (snap.val()[keys[j]] === connectionId) {
-              gameRef.child("connectionIds/" + keys[j]).remove();
-              break;
-            }
-          }
-        });
       }
     }else if(planets[connectedPlanets[i].from].inChaos === true) {
       connectionId = connectedPlanets[i].from + connectedPlanets[i].to;
-      connectedPlanets.splice(i, 1);
+
+      deleteConnection(connectionId);
 
       var connExists = $("#"+connectionId+"One");
       if(connExists.length !== 0) {
@@ -1228,22 +1028,6 @@ function deleteConnectionsToChaoticPlanets() {
         $("#"+connectionId+"One").remove();
         $("#"+connectionId+"Two").remove();
       }
-
-      // for(var k = 0; k < connectionIds.length; k++) {
-      //   if(connectionIds[k] === connectionId) {
-      //     connectionIds.splice(k, 1);
-      //   }
-      // }
-
-      gameRef.child("connectionIds").once("value", function(snap) {
-        var keys = Object.keys(snap.val());
-        for (var j in keys) {
-          if (snap.val()[keys[j]] === connectionId) {
-            gameRef.child("connectionIds/" + keys[j]).remove();
-            break;
-          }
-        }
-      });
     }
   }
 }
