@@ -9,20 +9,27 @@ function getNumBabies(population) {
   return population + 0.6*(Math.pow(((1000 - 80)/((1000 - 100))), 33/600)*population - population);
 }
 
-function getPlanetPopulations(giver, receiver){
+function getPlanetPopulations(giver, receiver, giverPopInFirebase){
   distance_x = giver.x - receiver.x;
   distance_y = giver.y - receiver.y;
   distance_x_sq = distance_x * distance_x;
   distance_y_sq = distance_y * distance_y;
   distance = Math.sqrt(distance_x_sq + distance_y_sq);
+  var giverPop;
 
-  var numTransferred = (Math.pow((getNumBabies(giver.population) - giver.population), 2)*KAY)/Math.pow((distance/maxDistance), 2);
+  if(giverPopInFirebase === undefined) {
+    giverPop = giver.population;
+  } else {
+    giverPop = giverPopInFirebase;
+  }
 
-  if(giver.population < 12) {
+  var numTransferred = (Math.pow((getNumBabies(giverPop) - giverPop), 2)*KAY)/Math.pow((distance/maxDistance), 2);
+
+  if(giverPop < 12) {
     numTransferred = 0.016;
   }
 
-  var giverPopulation = giver.population - numTransferred;
+  var giverPopulation = giverPop - numTransferred;
   var receiverPopulation;
 
   if(giver.color === receiver.color || receiver.color.toLowerCase() === "grey".toLowerCase()){

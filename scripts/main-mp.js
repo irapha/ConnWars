@@ -672,28 +672,38 @@ function requestStarterPlanet(){
 }
 
 function updatePopulations() {
+  var firebaseUpdates = {};
+
   for(var i = 0; i < connectedPlanets.length; i++) {
     giver = planets[connectedPlanets[i].from];
     receiver = planets[connectedPlanets[i].to];
-    newPops = getPlanetPopulations(giver, receiver);
+
+    if (firebaseUpdates[giver.id] === undefined || firebaseUpdates[giver.id].population === undefined) {
+      newPops = getPlanetPopulations(giver, receiver);
+    } else {
+      newPops = getPlanetPopulations(giver, receiver, firebaseUpdates[giver.id].population);
+    }
+
     newPops_zero = ~~newPops[0];
     newPops_one = ~~newPops[1];
-    var oldGiverColor = giver.color;
+
+    var oldGiverColor = (firebaseUpdates[giver.id] === undefined || firebaseUpdates[giver.id].color === undefined) ? giver.color : firebaseUpdates[giver.id].color;
 
     //if new population is zero, change color to grey
     if(newPops_zero <= 0) {
-      // $("#"+giver.id).removeClass(giver.color);
-      // $("#"+giver.id).addClass("grey");
-      gameRef.child("planets/" + giver.id + "/classColor").set("grey");
+      if (firebaseUpdates[giver.id] === undefined) { firebaseUpdates[giver.id] = {}; }
+      // gameRef.child("planets/" + giver.id + "/classColor").set("grey");
+      firebaseUpdates[giver.id].classColor = "grey";
     }
 
     if(newPops[0] <= 0) {
       newPops[0] = 0;
-      // $("#"+giver.id).removeClass(giver.color);
-      // $("#"+giver.id).addClass("grey");
-      gameRef.child("planets/" + giver.id + "/classColor").set("grey");
-      // giver.color = "grey";
-      gameRef.child("planets/" + giver.id + "/color").set("grey");
+      if (firebaseUpdates[giver.id] === undefined) { firebaseUpdates[giver.id] = {}; }
+      // gameRef.child("planets/" + giver.id + "/classColor").set("grey");
+      firebaseUpdates[giver.id].classColor = "grey";
+      // gameRef.child("planets/" + giver.id + "/color").set("grey");
+      firebaseUpdates[giver.id].color = "grey";
+
       //delete connection this planet has with others
       for(var i = 0; i < connectedPlanets.length; i++) {
         if(connectedPlanets[i].from === giver.id) {
@@ -706,18 +716,34 @@ function updatePopulations() {
         }
       }
     }
-    gameRef.child("planets/" + giver.id + "/population").set(newPops[0]);
+    if (firebaseUpdates[giver.id] === undefined) { firebaseUpdates[giver.id] = {}; }
+    // gameRef.child("planets/" + giver.id + "/population").set(newPops[0]);
+    firebaseUpdates[giver.id].population = newPops[0];
 
+    //TODO: figure out a way to make the next if vvv take this update ^^^ into account
+    //because it's not as simple as seeting it in firebase:
+    //what if the giver Id and receiver Id are the same for some combination of connections?
+    //that means that, when we set receiver id's population down here VVV,
+    //we will erase the changes we just made up here ^^^
+
+    var receiverColor = (firebaseUpdates[receiver.id] === undefined || firebaseUpdates[receiver.id].color === undefined) ? receiver.color : firebaseUpdates[receiver.id].color ;
+    var receiverPopulation = (firebaseUpdates[receiver.id] === undefined || firebaseUpdates[receiver.id].population === undefined) ? receiver.population : firebaseUpdates[receiver.id].population;
     //if new population is negative, change color to oposite
     if(newPops[1] < 0) {
       newPops[1] = (-1)*newPops[1];
-      if(receiver.color === "red") {
+
+      if(receiverColor === "red") {
         var newColor = "blue";
       }else if(receiver.color === "blue") {
         var newColor = "red";
       }
-      gameRef.child("planets/" + receiver.id + "/classColor").set(newColor);
-      gameRef.child("planets/" + receiver.id + "/color").set(newColor);
+
+      if (firebaseUpdates[receiver.id] === undefined) { firebaseUpdates[receiver.id] = {}; }
+      // gameRef.child("planets/" + receiver.id + "/classColor").set(newColor);
+      firebaseUpdates[receiver.id].classColor = newColor;
+      // gameRef.child("planets/" + receiver.id + "/color").set(newColor);
+      firebaseUpdates[receiver.id].color = newColor;
+
       //delete all connections from receiver.
       for(var i = 0; i < connectedPlanets.length; i++) {
         if(connectedPlanets[i].from === receiver.id) {
@@ -730,10 +756,22 @@ function updatePopulations() {
         }
       }
     }
-    if(receiver.population === 0) {
-      if(oldGiverColor === giver.color) {
-        gameRef.child("planets/" + receiver.id + "/classColor").set(oldGiverColor);
-        gameRef.child("planets/" + receiver.id + "/color").set(oldGiverColor);
+
+    if(receiverPopulation === 0) {
+
+      if (firebaseUpdates[giver.id] === undefined || firebaseUpdates[giver.id].color === undefined) {
+        giverColor = giver.color;
+      } else {
+        giverColor = giver.color = firebaseUpdates[giver.id].color
+      }
+
+      if(oldGiverColor === giverColor) {
+
+        if (firebaseUpdates[receiver.id] === undefined) { firebaseUpdates[receiver.id] = {}; }
+        // gameRef.child("planets/" + receiver.id + "/classColor").set(oldGiverColor);
+        firebaseUpdates[receiver.id].classColor = oldGiverColor;
+        // gameRef.child("planets/" + receiver.id + "/color").set(oldGiverColor);
+        firebaseUpdates[receiver.id].color = oldGiverColor;
 
         //check if, by mistake, this planet has active connections.
         for(var i = 0; i < connectedPlanets.length; i++) {
@@ -749,22 +787,41 @@ function updatePopulations() {
           }
         }
       }else {
-        if(receiver.color === "grey") {
+        if(receiverColor === "grey") {
           newPops[1] = 0;
         }
       }
     }
-    gameRef.child("planets/" + receiver.id + "/population").set(newPops[1]);
+    if (firebaseUpdates[receiver.id] === undefined) { firebaseUpdates[receiver.id] = {}; }
+    // gameRef.child("planets/" + receiver.id + "/population").set(newPops[1]);
+    firebaseUpdates[receiver.id].population = newPops[1];
   }
 
   for(var i = 0; i < planetIds.length; i++) {
     planet = planets[planetIds[i]];
-    if(planet.population > 2) {
-        gameRef.child("planets/" + planet.id + "/population").set(getNaturalGrowth(planetIds[i]));
+
+    var planetPopulation = (firebaseUpdates[planet.id] === undefined || firebaseUpdates[planet.id].population === undefined) ? planet.population : firebaseUpdates[planet.id].population ;
+
+    if(planetPopulation > 2) {
+        // gameRef.child("planets/" + planet.id + "/population").set(getNaturalGrowth(planetIds[i]));
+
+        if (firebaseUpdates[planet.id] === undefined || firebaseUpdates[planet.id].population === undefined) {
+          planetPopulation = getNaturalGrowth(planet.id);
+        } else {
+          planetPopulation = getNaturalGrowth(planet.id, firebaseUpdates[planet.id].population);
+        }
+
+        if (firebaseUpdates[planet.id] === undefined) { firebaseUpdates[planet.id] = {}; }
+        firebaseUpdates[planet.id].population = planetPopulation;
+
         //check for chaos
-        if(planet.population === 1000) {
-          gameRef.child("planets/" + planet.id + "/inChaos").set(true);
-          gameRef.child("planets/" + planet.id + "/inChaosClass").set(true);
+        if(planetPopulation === 1000) {
+          if (firebaseUpdates[planet.id] === undefined) { firebaseUpdates[planet.id] = {}; }
+          // gameRef.child("planets/" + planet.id + "/inChaos").set(true);
+          firebaseUpdates[planet.id].inChaos = true;
+          // gameRef.child("planets/" + planet.id + "/isnChaosClass").set(true);
+          firebaseUpdates[planet.id].inChaosClass = true;
+
           //delete all connections TO this planet, coming from planets of the same color
           for(var j = 0; j < connectedPlanets.length; j++) {
             if(connectedPlanets[j].to === planet.id) {
@@ -783,11 +840,17 @@ function updatePopulations() {
             }
           }
         }else if(planet.inChaos === true && planet.population <= 500) {
-          gameRef.child("planets/" + planet.id + "/inChaos").set(false);
-          gameRef.child("planets/" + planet.id + "/inChaosClass").set(false);
+          if (firebaseUpdates[planet.id] === undefined) { firebaseUpdates[planet.id] = {}; }
+          // gameRef.child("planets/" + planet.id + "/inChaos").set(false);
+          firebaseUpdates[planet.id].inChaos = false;
+          // gameRef.child("planets/" + planet.id + "/inChaosClass").set(false);
+          firebaseUpdates[planet.id].inChaosClass = false;
         }
     }
   }
+
+  //This is where the magic happens.
+  gameRef.child("planets").update(firebaseUpdates);
 }
 
 function updatePlanetScales() {
