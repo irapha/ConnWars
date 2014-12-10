@@ -49,14 +49,20 @@ function getPlanetPopulations(giver, receiver, giverPopInFirebase){
   return [giverPopulation, receiverPopulation];
 }
 
-function getNaturalGrowth(planetId){
+function getNaturalGrowth(planetId, planetPopInFirebase){
   planet = planets[planetId];
 
-  if(planet.inChaos){
-    return planet.population * DEPLETION_RATE;
+  if (planetPopInFirebase === undefined) {
+    var planetPopulation = planet.population;
+  } else {
+    var planetPopulation = planetPopInFirebase;
   }
 
-  newPopulation = getNumBabies(planet.population);
+  if(planet.inChaos){
+    return planetPopulation * DEPLETION_RATE;
+  }
+
+  newPopulation = getNumBabies(planetPopulation);
 
   if(newPopulation > 999){
     return 1000;
