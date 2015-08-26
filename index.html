@@ -5,47 +5,13 @@
     <title>ConnWars - LudumDare30</title>
     <link rel="icon" type="image/png" href="images/favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=0.6, user-scalable=0" />
-    <script src='https://cdn.firebase.com/js/client/1.1.1/firebase.js'></script>
-    <style type="text/css">
-      body {
-        background-image: url("images/stars.gif");
-        font-family: sans-serif;
-        -moz-user-select: -moz-none;
-        -khtml-user-select: none;
-        -webkit-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-      }
-      #menu {
-        left:auto;
-        right:auto;
-        text-align:center;
-      }
-      .option {
-        display:inline-block;
-        font-size: 22px;
-        font-weight:bold;
-        padding: 0px 20px 20px 20px;
-        color: white;
-        vertical-align:top;
-      }
-      #mute-button {
-        float:left;
-        position:absolute;
-        color: white;
-        padding: 4px;
-        border: 2px solid white;
-        cursor: pointer;
-        margin-left: 10px;
-      }
-      #soundloop {
-        display: none;
-      }
 
-      #instructions-wrapper {
-        color:white;
-      }
-    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src='https://cdn.firebase.com/js/client/1.1.1/firebase.js'></script>
+
+    <link rel="stylesheet" type="text/css" href="css/common.css" />
+    <link rel="stylesheet" type="text/css" href="css/menu.css" />
+    <link rel="stylesheet" type="text/css" href="css/audio.css" />
   </head>
 
   <body>
@@ -62,12 +28,16 @@
 
         <div id="option-wrapper">
 
-            <a href="singleplayer.html">
-                <div class="option">SINGLEPLAYER</div>
+            <a href="play.html">
+                <div class="option">PLAY 2.0</div>
             </a>
 
-            <a href="multiplayer.html">
-                <div class="option">MULTIPLAYER<br/><small>(beta)</small></div>
+            <a href="classic/singleplayer.html">
+                <div class="option">CLASSIC SINGLEPLAYER</div>
+            </a>
+
+            <a href="classic/multiplayer.html">
+                <div class="option">CLASSIC MULTIPLAYER<br/><small>(beta)</small></div>
             </a>
 
         </div>
@@ -78,17 +48,19 @@
             <h3>
                 Instructions
             </h3>
-            To start, click on a planet to settle.<br />Click on two planets in a row to connect them.<br/>Connect to enemy planets to eliminate their population.
+            To start, click on a planet to settle.<br />
+            Click on two planets in a row to connect them.<br/>
+            Connect to enemy planets to eliminate their population.
         </div>
 
     </div>
 
-    <audio controls autoplay and loop id = "soundloop">
+    <audio controls autoplay and loop id="soundloop">
         <source src="audio/ludumdaremenu.mp3" type="audio/mpeg">
     </audio>
 
-    <script src="scripts/jquery.min.js"></script>
     <script type="text/javascript">
+      // Audio controls.
       var playing = true;
       $('#mute-button').click(function() {
         var music = $('#soundloop')[0];

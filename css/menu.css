@@ -1,0 +1,16 @@
+#menu {
+  left:auto;
+  right:auto;
+  text-align:center;
+}
+.option {
+  display:inline-block;
+  font-size: 22px;
+  font-weight:bold;
+  padding: 0px 20px 20px 20px;
+  color: white;
+  vertical-align: top;
+}
+#instructions-wrapper {
+  color:white;
+}
