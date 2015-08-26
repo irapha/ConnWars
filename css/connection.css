@@ -1,0 +1,54 @@
+@keyframes moveArrows {
+  from {background-position: 0px 0px;}
+  to {background-position: 10px 0px;}
+}
+@-webkit-keyframes moveArrows {
+  from {background-position: 0px 0px;}
+  to {background-position: 10px 0px;}
+}
+@-o-keyframes moveArrows {
+  from {background-position: 0px 0px;}
+  to {background-position: 10px 0px;}
+}
+@-moz-keyframes moveArrows {
+  from {background-position: 0px 0px;}
+  to {background-position: 10px 0px;}
+}
+.connection {
+  height: 5px;
+  position: absolute;
+  -webkit-animation: moveArrows linear 0.5s infinite;
+  -moz-animation: moveArrows linear 0.5s infinite;
+  -o-animation: moveArrows linear 0.5s infinite;
+  animation: moveArrows linear 0.5s infinite;
+}
+.connection.blue {
+  background-repeat: repeat-x;
+  background-size: contain;
+}
+.connection.red {
+  background-image: url("../images/orange_lines.gif");
+  background-repeat: repeat-x;
+  background-size: contain;
+}
+.connection.right {
+  -webkit-transform-origin: 0% 0%;
+  transform-origin: 0% 0%;
+  z-index: 1;
+}
+.connection.left {
+  -webkit-transform-origin: 0% 100%;
+  transform-origin: 0% 100%;
+}
+.connection.blue.left {
+  background-image: url("../images/blue_line_left.gif");
+}
+.connection.blue.right {
+  background-image: url("../images/blue_line_right.gif");
+}
+.connection.red.left {
+  background-image: url("../images/orange_line_left.gif");
+}
+.connection.red.right {
+  background-image: url("../images/orange_line_right.gif");
+}

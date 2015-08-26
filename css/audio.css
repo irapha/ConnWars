@@ -1,13 +1,10 @@
 #soundloop {
   display: none;
 }
-
 #mute-button {
-  float:left;
-  position:absolute;
+  float: left;
   color: white;
   padding: 4px;
   border: 2px solid white;
   cursor: pointer;
-  margin-left: 10px;
 }
