@@ -50,9 +50,21 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src='https://cdn.firebase.com/js/client/1.1.1/firebase.js'></script>
 
-    <script src="classic/scripts/computerplayer.js"></script>
-    <script src="classic/scripts/main.js"></script>
-    <script src="classic/scripts/population.js"></script>
+    <script src="lib/LoggingController.js"></script>
+    <script src="lib/GameController.js"></script>
+    <script src="lib/GameplayController.js"></script>
+    <script src="lib/ViewController.js"></script>
+    <script src="lib/AiController.js"></script>
+    <script src="lib/PlayerController.js"></script>
+    <script src="lib/AudioController.js"></script>
+
+    <script src="lib/Planet.js"></script>
+
+    <!-- Start application -->
+    <script type="text/javascript">
+      var gc = new GameController();
+      gc.main();
+    </script>
 
   </body>
 </html>

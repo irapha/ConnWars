@@ -8,3 +8,6 @@
   border: 2px solid white;
   cursor: pointer;
 }
+.mute-button-index {
+  position: absolute;
+}

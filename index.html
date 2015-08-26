@@ -18,7 +18,7 @@
     <!-- Fork me on GitHub! -->
     <a href="https://github.com/GTLudumDare/ludum-dare-30"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/52760788cde945287fbb584134c4cbc2bc36f904/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f77686974655f6666666666662e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png"></a>
 
-    <div id='mute-button'>Mute</div>
+    <div id='mute-button' class='mute-button-index'>Mute</div>
 
     <div id="menu">
 
@@ -59,22 +59,12 @@
         <source src="audio/ludumdaremenu.mp3" type="audio/mpeg">
     </audio>
 
+    <script src="lib/AudioController.js"></script>
+    <script src="lib/LoggingController.js"></script>
     <script type="text/javascript">
-      // Audio controls.
-      var playing = true;
-      $('#mute-button').click(function() {
-        var music = $('#soundloop')[0];
-        if(!playing) {
-          music.play();
-          playing = true;
-          $('#mute-button').html('Mute');
-        }
-        else {
-          music.pause();
-          playing = false;
-          $('#mute-button').html('UnMute');
-        }
-      });
+      // Initialize audio controller.
+      var lc = new LoggingController();
+      var ac = new AudioController(lc);
     </script>
 
   </body>
