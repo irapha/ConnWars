@@ -26,7 +26,7 @@
   border-radius: 15px 0 0 15px;
   z-index: 5;
   border-right: none;
-  background: #6EA1D7;
+  background: #AEAEAE;
   opacity: 0;
 
   transform-origin: 100% 50%;
@@ -37,7 +37,7 @@
   z-index: 4;
   border-left: none;
   left: 50%;
-  background: #6EA1D7;
+  background: #4391F7;
   opacity: 0;
 }
 .pie-mask-blue {

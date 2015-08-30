@@ -27,10 +27,10 @@
   background-color: #F26140;
 }
 .planet.blue {
-  background-color: #6EA1D7;
+  background-color: #4391F7;
 }
 .planet.grey {
-  background-color: #6E6E6E;
+  background-color: #A2A2A2;
 }
 
 @keyframes enterChaos {
