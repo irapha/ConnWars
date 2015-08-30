@@ -51,7 +51,7 @@
   background: inherit;
 }
 
-.pie-spinner-red {
+.pie-spinner-orange {
   border-radius: 0 15px 15px 0;
   z-index: 5;
   border-left: none;
@@ -62,14 +62,14 @@
   transform-origin: 0% 50%;
   -webkit-transform-origin: 0% 50%;
 }
-.pie-filler-red {
+.pie-filler-orange {
   border-radius: 15px 0 0 15px;
   z-index: 4;
   border-right: none;
   background: #F26140;
   opacity: 0;
 }
-.pie-mask-red {
+.pie-mask-orange {
   width: 50%;
   height: 100%;
   position: absolute;

@@ -26,7 +26,7 @@
   background-repeat: repeat-x;
   background-size: contain;
 }
-.connection.red {
+.connection.orange {
   background-image: url("../images/orange_lines.gif");
   background-repeat: repeat-x;
   background-size: contain;
@@ -46,9 +46,9 @@
 .connection.blue.right {
   background-image: url("../images/blue_line_right.gif");
 }
-.connection.red.left {
+.connection.orange.left {
   background-image: url("../images/orange_line_left.gif");
 }
-.connection.red.right {
+.connection.orange.right {
   background-image: url("../images/orange_line_right.gif");
 }
