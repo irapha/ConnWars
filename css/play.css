@@ -24,17 +24,18 @@
   margin: 50px;
 }
 #messagemenu {
+  overflow: hidden;
   z-index: 2;
+}
+#messagemenu, #messagemenu a {
+  color: white;
+  font-weight: bold;
 }
 #welcome {
   font-size: 25px;
-  color: white;
-  font-weight: bold;
 }
 #message {
   font-size: 16px;
-  color: white;
-  font-weight: bold;
 }
 #pause-button {
   float:left;
@@ -47,9 +48,6 @@
   margin-right: 10px;
 }
 #feedback-button {
-  /* position: absolute; */
-  /* top: 10px; */
-  /* right: 10px; */
   float: right;
   color: white;
   padding: 4px;
