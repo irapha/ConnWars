@@ -1,41 +1,38 @@
+#topmenu {
+  margin: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 5px;
+  width: calc(100% - 10px);
+
+  background: -moz-linear-gradient(top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.65)), color-stop(100%,rgba(0,0,0,0))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%); /* IE10+ */
+  background: linear-gradient(to bottom, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6000000', endColorstr='#00000000',GradientType=0 ); /* IE6-9 */
+}
 #viewport {
   position: absolute;
   left: 0;
   right: 0;
-  top: 0;
+  top: 25px;
   bottom: 0;
   background-repeat: repeat;
-  margin: 5%;
+  margin: 50px;
 }
-#startmenu {
-  postition: absolute;
-  top: 100px;
+#messagemenu {
   z-index: 2;
-}
-#blackmenu {
-  max-width: 450px;
-  background-color: rgba(0, 0, 0, 0.5);
 }
 #welcome {
+  font-size: 25px;
   color: white;
   font-weight: bold;
-  font-size: 25px;
 }
-#endmenu {
-  postition: absolute;
-  top: 100px;
-  z-index: 2;
-}
-#blackmenuend {
-  width: 300px;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-#whowon {
-  color: white;
-  font-weight: bold;
-  font-size: 25px;
-}
-#settlemsg {
+#message {
+  font-size: 16px;
   color: white;
   font-weight: bold;
 }
@@ -50,9 +47,10 @@
   margin-right: 10px;
 }
 #feedback-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
+  /* position: absolute; */
+  /* top: 10px; */
+  /* right: 10px; */
+  float: right;
   color: white;
   padding: 4px;
   border: 2px solid white;
