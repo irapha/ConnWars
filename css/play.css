@@ -17,11 +17,9 @@
 #viewport {
   position: absolute;
   left: 0;
-  right: 0;
   top: 25px;
-  bottom: 0;
-  background-repeat: repeat;
-  margin: 50px;
+  height: calc(100% - 25px);
+  width: 100%;
 }
 #messagemenu {
   overflow: hidden;
