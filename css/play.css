@@ -21,8 +21,8 @@
   top: 15px;
 }
 #messagemenu {
-  overflow: hidden;
   z-index: 2;
+  max-width: calc(100% - 220px);
 }
 #messagemenu, #messagemenu a {
   color: white;
